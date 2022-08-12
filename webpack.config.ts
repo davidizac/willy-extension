@@ -1,6 +1,3 @@
-/* eslint-disable node/no-unpublished-require */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable node/no-unpublished-import */
 import path from 'path'
 
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
@@ -37,8 +34,6 @@ const config: webpack.Configuration = {
     },
   },
   entry: {
-    popup: path.join(srcDir, 'popup'),
-    options: path.join(srcDir, 'options'),
     background: getEntry('background'),
     content: getEntry('content'),
   },
@@ -59,9 +54,7 @@ const config: webpack.Configuration = {
         options: {
           // auto insert react runtime
           presets: [['react-app', { runtime: 'automatic' }]],
-          plugins: [isDev && require.resolve('react-refresh/babel')].filter(
-            Boolean,
-          ),
+          plugins: [isDev && require.resolve('react-refresh/babel')].filter(Boolean),
         },
       },
     ],

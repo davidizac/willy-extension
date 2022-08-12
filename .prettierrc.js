@@ -1,7 +1,10 @@
 module.exports = {
-  singleQuote: true,
-  semi: false,
-  // https://zhuanlan.zhihu.com/p/64627216
-  htmlWhitespaceSensitivity: 'ignore',
-  trailingComma: 'all',
+  "semi": false,
+  "tabWidth": 2,
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "jsxSingleQuote": true,
+  "bracketSpacing": true
 }
+ 

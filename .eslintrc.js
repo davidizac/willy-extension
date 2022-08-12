@@ -1,53 +1,46 @@
+// eslint-disable-next-line no-undef
 module.exports = {
   parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 2021,
-    sourceType: 'module',
+  env: {
+    browser: true,
+    es2021: true,
+    jest: true,
   },
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: 'module',
+    ecmaFeatures: {
+      // Allows for the parsing of JSX
+      jsx: true,
+    },
+  },
+  ignorePatterns: ['node_modules/**/*', 'build/**/*', 'dist/**/*'],
   extends: [
     'eslint:recommended',
-    'plugin:node/recommended',
-    // https://github.com/prettier/eslint-plugin-prettier
-    // https://zhuanlan.zhihu.com/p/80574300
-    'plugin:prettier/recommended',
-    'plugin:react-hooks/recommended',
+    'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
   ],
-  plugins: ['import'],
+  plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier'],
   rules: {
-    // note you must disable the base rule as it can report incorrect errors
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/no-non-null-assertion': 'off',
+    'react/react-in-jsx-scope': 'off',
+    camelcase: 'error',
+    'spaced-comment': 'error',
+    'no-duplicate-imports': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'node/no-missing-import': 'off',
-    'node/no-unsupported-features/es-syntax': 'off',
-    'node/no-missing-require': 'off',
-    'node/shebang': 'off',
-    'no-console': 'error',
-    'react-hooks/exhaustive-deps': 'error',
-    'import/order': [
-      'error',
-      {
-        alphabetize: { order: 'asc' },
-        'newlines-between': 'always',
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
-        pathGroups: [
-          {
-            pattern: '@/**',
-            group: 'internal',
-          },
-        ],
-        pathGroupsExcludedImportTypes: ['builtin'],
-      },
-    ],
+    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {},
+    },
   },
   overrides: [
     {
