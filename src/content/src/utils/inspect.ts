@@ -1,10 +1,9 @@
 import type { Fiber } from 'react-reconciler'
 
-
 export interface CodeInfo {
-  lineNumber: string,
-  columnNumber: string,
-  relativePath: string,
+  lineNumber: string
+  columnNumber: string
+  relativePath: string
 }
 
 export const getElementCodeInfo = (element: HTMLElement): CodeInfo | undefined => {
@@ -36,9 +35,7 @@ export const getElementCodeInfo = (element: HTMLElement): CodeInfo | undefined =
  * https://stackoverflow.com/questions/29321742/react-getting-a-component-from-a-dom-element-for-debugging
  */
 export const getElementFiber = (element: HTMLElement): Fiber | null => {
-  const fiberKey = Object.keys(element).find(
-    key => key.startsWith('__reactInternalInstance$'),
-  )
+  const fiberKey = Object.keys(element).find((key) => key.startsWith('__reactInternalInstance$'))
 
   if (fiberKey) {
     return element[fiberKey] as Fiber
@@ -47,19 +44,19 @@ export const getElementFiber = (element: HTMLElement): Fiber | null => {
   return null
 }
 
-
-export const debugToolNameRegex = /^(.*?\.Provider|.*?\.Consumer|Anonymous|Trigger|Tooltip|_.*|[a-z].*)$/
+export const debugToolNameRegex =
+  /^(.*?\.Provider|.*?\.Consumer|Anonymous|Trigger|Tooltip|_.*|[a-z].*)$/
 
 export const getSuitableFiber = (baseFiber?: Fiber): Fiber | null => {
-  let suitableFiber = null;
-  let compFiber = baseFiber;
+  let suitableFiber = null
+  let compFiber = baseFiber
   while (compFiber) {
     const name = compFiber._currentElement?.type
     if (name && !debugToolNameRegex.test(name)) {
       suitableFiber = compFiber._currentElement
-      break;
+      break
     }
-    compFiber = compFiber?._currentElement?._owner;
+    compFiber = compFiber?._currentElement?._owner
   }
   return suitableFiber
 }
@@ -82,22 +79,21 @@ export const getFiberName = (fiber?: Fiber): string | undefined => {
   return displayName
 }
 
-export const getElementInspect = (element: HTMLElement, sourcePath?: string): {
-  fiber?: Fiber,
-  name?: string,
-  title: string,
+export const getElementInspect = (
+  element: HTMLElement,
+  sourcePath?: string,
+): {
+  fiber?: Fiber
+  name?: string
+  title: string
 } => {
   const fiber = getSuitableFiber(getElementFiber(element))
   const fiberName = getFiberName(fiber)
   const nodeName = element.nodeName.toLowerCase()
 
-  const elementName = fiberName
-    ? fiberName
-    : nodeName
+  const elementName = fiberName ? fiberName : nodeName
 
-  const title = sourcePath
-    ? `<${elementName}>`
-    : `${nodeName} in <${fiberName}>`
+  const title = sourcePath ? `<${elementName}>` : `${nodeName} in <${fiberName}>`
 
   return {
     fiber,

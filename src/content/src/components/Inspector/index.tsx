@@ -1,24 +1,20 @@
 import { setupHighlighter } from '../../utils/hightlight'
-import {
-  getElementCodeInfo,
-  getElementInspect,
-  CodeInfo,
-} from '../../utils/inspect'
+import { getElementCodeInfo, getElementInspect, CodeInfo } from '../../utils/inspect'
 import Overlay from './Overlay'
 
 export interface InspectParams {
   /** hover / click event target dom element */
-  element: HTMLElement,
+  element: HTMLElement
   /** nearest named react component fiber for dom element */
   // fiber?: Fiber,
   /** source file line / column / path info for react component */
-  codeInfo?: CodeInfo,
+  codeInfo?: CodeInfo
   /** react component name for dom element */
-  name?: string,
+  name?: string
 }
 
 export interface InspectStates {
-  isInspect: boolean,
+  isInspect: boolean
 }
 
 export type ElementHandler = (params: InspectParams) => void
@@ -29,26 +25,22 @@ export interface InspectorProps {
    *
    * supported keys see: https://github.com/jaywcjlove/hotkeys#supported-keys
    */
-  keys?: string[],
-  onHoverElement?: ElementHandler,
-  onClickElement?: ElementHandler,
+  keys?: string[]
+  onHoverElement?: ElementHandler
+  onClickElement?: ElementHandler
   /**
    * whether disable click react component to open IDE for view component code
    */
-  disableLaunchEditor?: boolean,
+  disableLaunchEditor?: boolean
 }
 
-export function useInspector () {
+export function useInspector(handleClickElement) {
   const overlayRef = {
-    current: new Overlay()
-  };
+    current: new Overlay(),
+  }
 
   const handleHoverElement = (element: HTMLElement) => {
     const overlay = overlayRef?.current
-
-    const node = element as Node
-    const willContainer = document.getElementById('willy-container') as Node
-    if(willContainer.contains(node)) return
     const codeInfo = getElementCodeInfo(element)
     const relativePath = codeInfo?.relativePath
     const { name, title } = getElementInspect(element, relativePath)
@@ -58,21 +50,24 @@ export function useInspector () {
   const startInspect = () => {
     const overlay = new Overlay()
 
-    const stopCallback = setupHighlighter({
-      onPointerOver: handleHoverElement
+    setupHighlighter({
+      onPointerOver: handleHoverElement,
+      onClick: (e) => {
+        stopInspect()
+        handleClickElement(e)
+      },
     })
-
-    overlay.setRemoveCallback(stopCallback)
 
     overlayRef.current = overlay
   }
 
   const stopInspect = () => {
     overlayRef.current?.remove()
+    overlayRef.current = undefined as unknown as Overlay
   }
 
   return {
     startInspect,
-    stopInspect
+    stopInspect,
   }
 }

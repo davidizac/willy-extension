@@ -36,6 +36,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     'react-hooks/exhaustive-deps': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
+    'react/prop-types': 'off',
   },
   settings: {
     'import/resolver': {

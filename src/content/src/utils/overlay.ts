@@ -5,16 +5,14 @@
  * which will deal multiple levels of nesting iframe.
  */
 
-
- export interface Rect {
-  bottom: number,
-  height: number,
-  left: number,
-  right: number,
-  top: number,
-  width: number,
+export interface Rect {
+  bottom: number
+  height: number
+  left: number
+  right: number
+  top: number
+  width: number
 }
-
 
 // Calculate a boundingClientRect for a node relative to boundaryWindow,
 // taking into account any offsets caused by intermediate iframes.

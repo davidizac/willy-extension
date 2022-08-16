@@ -4,7 +4,8 @@ import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import DotenvFlow from 'dotenv-flow-webpack'
 import webpack from 'webpack'
-
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 const isDev = process.env.NODE_ENV !== 'production'
 
 const srcDir = path.join(__dirname, 'src')
@@ -44,8 +45,16 @@ const config: webpack.Configuration = {
   module: {
     rules: [
       {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        test: /skin\.css$/i,
+        use: ['css-loader'],
+      },
+      {
+        test: /content\.css$/i,
+        use: ['css-loader'],
+      },
+      {
+        test: /\.svg$/,
+        use: 'file-loader',
       },
       {
         test: /\.tsx?$/,
@@ -69,6 +78,7 @@ const config: webpack.Configuration = {
   plugins: [
     new CleanWebpackPlugin(),
     new DotenvFlow(),
+    new MiniCssExtractPlugin(),
     new webpack.EnvironmentPlugin({
       MV3_HOT_RELOAD_PORT: 7761,
     }),

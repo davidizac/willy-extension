@@ -1,8 +1,10 @@
-import ReactDOM from 'react-dom'
-
-import 'tailwindcss/tailwind.css'
+import { createRoot } from 'react-dom/client'
 import App from './App'
-const container = document.createElement('div')
-document.documentElement.prepend(container)
 
-ReactDOM.render(<App />, container)
+const willyContainer = document.createElement('willy-container')
+
+document.body.append(willyContainer)
+
+const root = createRoot(willyContainer)
+
+root.render(<App />)

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
+
+<defs>
+</defs>
+<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+	<path d="M 90 43.5 h -8.017 C 81.213 24.278 65.722 8.787 46.5 8.016 V 0 h -3 v 8.016 C 24.278 8.787 8.787 24.278 8.016 43.5 H 0 v 3 h 8.016 C 8.787 65.722 24.278 81.213 43.5 81.983 V 90 h 3 v -8.017 C 65.722 81.213 81.213 65.722 81.983 46.5 H 90 V 43.5 z M 46.5 78.983 v -7.939 h -3 v 7.939 C 25.932 78.217 11.783 64.068 11.016 46.5 h 7.94 v -3 h -7.94 C 11.783 25.932 25.932 11.783 43.5 11.016 v 7.94 h 3 v -7.94 C 64.068 11.783 78.217 25.932 78.983 43.5 h -7.939 v 3 h 7.939 C 78.217 64.068 64.068 78.217 46.5 78.983 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+	<polygon points="57,43.5 46.5,43.5 46.5,33 43.5,33 43.5,43.5 33,43.5 33,46.5 43.5,46.5 43.5,57 46.5,57 46.5,46.5 57,46.5 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/>
+</g>
+</svg>

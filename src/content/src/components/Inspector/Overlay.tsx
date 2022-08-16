@@ -2,18 +2,13 @@
  * mirror from https://github.com/facebook/react/blob/v16.13.1/packages/react-devtools-shared/src/backend/views/utils.js
  */
 
- import {
-  Rect,
-  getElementDimensions,
-  getNestedBoundingClientRect,
-} from '../../utils/overlay'
-
+import { Rect, getElementDimensions, getNestedBoundingClientRect } from '../../utils/overlay'
 
 interface Box {
-  top: number,
-  left: number,
-  width: number,
-  height: number,
+  top: number
+  left: number
+  width: number
+  height: number
 }
 
 // Note that the Overlay components are not affected by the active Theme,
@@ -62,22 +57,12 @@ class OverlayRect {
     boxWrap(dims, 'padding', this.padding)
 
     Object.assign(this.content.style, {
-      height:
-        `${
-          box.height
-          - dims.borderTop
-          - dims.borderBottom
-          - dims.paddingTop
-          - dims.paddingBottom
-        }px`,
-      width:
-        `${
-          box.width
-          - dims.borderLeft
-          - dims.borderRight
-          - dims.paddingLeft
-          - dims.paddingRight
-        }px`,
+      height: `${
+        box.height - dims.borderTop - dims.borderBottom - dims.paddingTop - dims.paddingBottom
+      }px`,
+      width: `${
+        box.width - dims.borderLeft - dims.borderRight - dims.paddingLeft - dims.paddingRight
+      }px`,
     })
 
     Object.assign(this.node.style, {
@@ -102,8 +87,7 @@ class OverlayTip {
       alignItems: 'center',
       backgroundColor: '#333740',
       borderRadius: '2px',
-      fontFamily:
-        '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
+      fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
       fontWeight: 'bold',
       padding: '6px 8px',
       pointerEvents: 'none',
@@ -155,8 +139,7 @@ class OverlayTip {
   updateText(name: string, info: string | undefined, width: number, height: number) {
     this.titleDiv.textContent = name
     this.infoDiv.textContent = info ?? ''
-    this.dimSpan.textContent
-      = `${Math.round(width)}px × ${Math.round(height)}px`
+    this.dimSpan.textContent = `${Math.round(width)}px × ${Math.round(height)}px`
   }
 
   updatePosition(dims: Box, bounds: Box) {
@@ -193,14 +176,16 @@ export default class Overlay {
 
     this.tip = new OverlayTip(doc, this.container)
     this.rects = []
-    this.removeCallback = () => {}
+    this.removeCallback = () => {
+      console.log('remove callback called')
+    }
 
     doc.body.appendChild(this.container)
   }
 
   remove() {
     this.tip.remove()
-    this.rects.forEach(rect => {
+    this.rects.forEach((rect) => {
       rect.remove()
     })
     this.rects.length = 0
@@ -211,14 +196,10 @@ export default class Overlay {
     this.removeCallback()
   }
 
-  setRemoveCallback(callback: Function) {
-    this.removeCallback = callback.bind(this)
-  }
-
   inspect(nodes: Array<HTMLElement>, name?: string, info?: string) {
     // We can't get the size of text nodes or comment nodes. React as of v15
     // heavily uses comment nodes to delimit text.
-    const elements = nodes.filter(node => node.nodeType === Node.ELEMENT_NODE)
+    const elements = nodes.filter((node) => node.nodeType === Node.ELEMENT_NODE)
 
     while (this.rects.length > elements.length) {
       const rect = this.rects.pop()
@@ -238,19 +219,14 @@ export default class Overlay {
       bottom: Number.NEGATIVE_INFINITY,
       left: Number.POSITIVE_INFINITY,
     }
+    // changeCursor(true)
     elements.forEach((element, index) => {
       const box = getNestedBoundingClientRect(element, this.window)
       const dims = getElementDimensions(element)
 
       outerBox.top = Math.min(outerBox.top, box.top - dims.marginTop)
-      outerBox.right = Math.max(
-        outerBox.right,
-        box.left + box.width + dims.marginRight,
-      )
-      outerBox.bottom = Math.max(
-        outerBox.bottom,
-        box.top + box.height + dims.marginBottom,
-      )
+      outerBox.right = Math.max(outerBox.right, box.left + box.width + dims.marginRight)
+      outerBox.bottom = Math.max(outerBox.bottom, box.top + box.height + dims.marginBottom)
       outerBox.left = Math.min(outerBox.left, box.left - dims.marginLeft)
 
       const rect = this.rects[index]
@@ -280,12 +256,7 @@ export default class Overlay {
       // }
     }
 
-    this.tip.updateText(
-      name,
-      info,
-      outerBox.right - outerBox.left,
-      outerBox.bottom - outerBox.top,
-    )
+    this.tip.updateText(name, info, outerBox.right - outerBox.left, outerBox.bottom - outerBox.top)
     const tipBounds = getNestedBoundingClientRect(
       this.tipBoundsWindow.document.documentElement,
       this.window,
@@ -355,9 +326,17 @@ function boxWrap(dims, what, node) {
   })
 }
 
+function changeCursor(onTarget) {
+  if (onTarget) {
+    document.body.style.cursor = 'url("../../../assets/target.svg")'
+  } else {
+    document.body.style.cursor = 'pointer'
+  }
+}
+
 const overlayStyles = {
-  background: 'rgba(120, 170, 210, 0.7)',
-  padding: 'rgba(77, 200, 0, 0.3)',
-  margin: 'rgba(255, 155, 0, 0.3)',
-  border: 'rgba(255, 200, 50, 0.3)',
+  background: 'rgba(203, 243, 240, 0.4)',
+  padding: 'rgba(203, 243, 240, 0.4)',
+  margin: 'rgba(203, 243, 240, 0.4)',
+  border: 'rgba(203, 243, 240, 0.4)',
 }

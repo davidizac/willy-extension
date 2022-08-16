@@ -2,7 +2,6 @@
  * mirror from https://github.com/facebook/react/blob/v16.13.1/packages/react-devtools-shared/src/backend/views/Highlighter/index.js
  */
 
-
 // This plug-in provides in-page highlighting of the selected element.
 // It is used by the browser extension nad the standalone DevTools shell
 // (when connected to a browser).
@@ -13,13 +12,10 @@ let iframesListeningTo: Set<HTMLIFrameElement> = new Set()
 
 export type StopFunction = () => void
 
-export function setupHighlighter(
-  handlers: {
-    onPointerOver?: (element: HTMLElement) => void,
-    onClick?: (element: HTMLElement) => void,
-  },
-): StopFunction {
-
+export function setupHighlighter(handlers: {
+  onPointerOver?: (element: HTMLElement) => void
+  onClick?: (element: HTMLElement) => void
+}) {
   function startInspectingNative() {
     registerListenersOnWindow(window)
   }
@@ -28,18 +24,13 @@ export function setupHighlighter(
     // This plug-in may run in non-DOM environments (e.g. React Native).
     if (window && typeof window.addEventListener === 'function') {
       window.addEventListener('click', onClick, true)
-      window.addEventListener('mousedown', onMouseEvent, true)
-      window.addEventListener('mouseover', onMouseEvent, true)
-      window.addEventListener('mouseup', onMouseEvent, true)
-      window.addEventListener('pointerdown', onPointerDown, true)
-      window.addEventListener('pointerover', onPointerOver, true)
-      window.addEventListener('pointerup', onPointerUp, true)
+      window.addEventListener('mouseover', onPointerOver, true)
     }
   }
 
   function stopInspectingNative() {
     removeListenersOnWindow(window)
-    iframesListeningTo.forEach(function(frame) {
+    iframesListeningTo.forEach(function (frame) {
       try {
         removeListenersOnWindow(frame.contentWindow)
       } catch (error) {
@@ -53,12 +44,7 @@ export function setupHighlighter(
     // This plug-in may run in non-DOM environments (e.g. React Native).
     if (window && typeof window.removeEventListener === 'function') {
       window.removeEventListener('click', onClick, true)
-      window.removeEventListener('mousedown', onMouseEvent, true)
-      window.removeEventListener('mouseover', onMouseEvent, true)
-      window.removeEventListener('mouseup', onMouseEvent, true)
-      window.removeEventListener('pointerdown', onPointerDown, true)
-      window.removeEventListener('pointerover', onPointerOver, true)
-      window.removeEventListener('pointerup', onPointerUp, true)
+      window.removeEventListener('mouseover', onPointerOver, true)
     }
   }
 
@@ -71,20 +57,9 @@ export function setupHighlighter(
     handlers.onClick?.(event.target as HTMLElement)
   }
 
-  function onMouseEvent(event: MouseEvent) {
-    event.preventDefault()
-    event.stopPropagation()
-  }
-
-  function onPointerDown(event: MouseEvent) {
-    event.preventDefault()
-    event.stopPropagation()
-  }
-
   function onPointerOver(event: MouseEvent) {
     event.preventDefault()
     event.stopPropagation()
-
     const target = event.target as HTMLElement
 
     if (target.tagName === 'IFRAME') {
@@ -103,12 +78,5 @@ export function setupHighlighter(
     handlers.onPointerOver?.(event.target as HTMLElement)
   }
 
-  function onPointerUp(event: MouseEvent) {
-    event.preventDefault()
-    event.stopPropagation()
-  }
-
   startInspectingNative()
-
-  return stopInspectingNative
 }
