@@ -16,7 +16,7 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "action": {
+  "action": { 
     "default_popup": "popup.html",
     "default_icon": {
       "16": "/images/get_started16.png",

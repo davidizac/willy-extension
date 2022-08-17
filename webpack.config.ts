@@ -45,6 +45,10 @@ const config: webpack.Configuration = {
   module: {
     rules: [
       {
+        test: /\.css$/i,
+        use: ['css-loader'],
+      },
+      {
         test: /skin\.css$/i,
         use: ['css-loader'],
       },
