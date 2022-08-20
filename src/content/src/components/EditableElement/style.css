@@ -21,9 +21,6 @@
   justify-content: flex-start;
   align-items: stretch;
   flex-wrap: nowrap;
-  background-color: white;
-  padding: 14px;
-  border-radius: 10px;
 }
 
 .editor-canvas {
@@ -45,7 +42,55 @@
   position: initial;
 }
 
+.gjs-cv-canvas{
+  background-color: rgba(0,0,0,.15);
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+
+.gjs-editor{
+  height: auto;
+}
+
+.gjs-cv-canvas{
+  height: auto;
+  width: auto;
+  position: inherit;
+  overflow: visible;
+}
+
+.gjs-cv-canvas__frames{
+  position: inherit;
+  height: auto;
+  width: auto;
+}
+
+.gjs-frame-wrapper{
+  position: inherit;
+  height: auto; 
+  width: auto;
+}
+
+.gjs-frame{
+  position: inherit;
+}
+
+/* .gjs-toolbar{
+  right: -30px;
+  left: auto!important;
+  border-radius: 13px;
+  top: 0;
+}
+
+.gjs-toolbar div{
+  display: flex;
+  flex-direction: column;
+} */
+
+.gjs-toolbar{
+  display: none;
+}
 .gjs-rte-toolbar{
-  position: fixed;
-  top: 600px!important;
+  display: none;
 }
