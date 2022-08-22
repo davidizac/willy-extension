@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-// import RenderTinyMCE from '../TinyMCE'
 import { useInspector } from '../Inspector'
 import EditableElement from '../EditableElement'
-import html from '!raw-loader!../../templates/index.html'
 
 export default function EditorContainer({ shouldStartInspect }) {
   const [elementPosition, setElementPosition] = useState({
@@ -27,6 +25,10 @@ export default function EditorContainer({ shouldStartInspect }) {
     }
   }, [shouldStartInspect])
 
+  const editorConfig = {
+    width: 250,
+  }
+
   return (
     <div
       style={{
@@ -40,7 +42,11 @@ export default function EditorContainer({ shouldStartInspect }) {
       }}
     >
       {shouldDisplayElement && (
-        <EditableElement top={elementPosition.top} left={elementPosition.left} htmlContent={html} />
+        <EditableElement
+          editorConfig={editorConfig}
+          top={elementPosition.top}
+          left={elementPosition.left}
+        />
       )}
     </div>
   )

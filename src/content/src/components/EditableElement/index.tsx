@@ -1,119 +1,122 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable camelcase */
-import tinymce from 'tinymce'
-
-import skinCss from '!raw-loader!tinymce/skins/ui/oxide/skin.css'
-import skinCss2 from '!raw-loader!tinymce/skins/ui/oxide/content.css'
-import skinCss3 from '!raw-loader!tinymce/skins/ui/oxide/skin.shadowdom.css'
-import skinCss4 from '!raw-loader!tinymce/skins/ui/oxide/content.inline.css'
 import grapesjsCss from '!raw-loader!grapesjs/dist/css/grapes.min.css'
-
-import grapesjs from 'grapesjs'
 import customStyle from '!raw-loader!./style.css'
 import { useEffect, useRef, useState } from 'react'
-import 'grapesjs-blocks-basic'
-import 'grapesjs-rte-extensions/dist/grapesjs-rte-extensions.min.js'
-import iconPlus from '../../../assets/plus-icon.svg'
+import { initEditor } from '../../utils/editor'
+import { EditableIcon, PlusIcon } from '../../icons'
+import ControlToolbar from '../ControlToolbar'
+import styled from 'styled-components'
 
-export default function EditableElement({ top, left, htmlContent }) {
+const ToolBarContainer = styled.div`
+  position: absolute;
+  z-index: 2;
+`
+
+export default function EditableElement({ top, left, editorConfig }) {
   const elementRef = useRef(null)
+  const plusIconRef = useRef(null)
+  const editableIconRef = useRef(null)
+  const [editor, setEditor] = useState()
+  const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null)
+  const [editedElement, setEditedElement] = useState<HTMLElement | null>(null)
+
+  const [iconsProp, setIconsProp] = useState({
+    display: 'none',
+    edit: {
+      top: '0px',
+      left: '0px',
+    },
+    plus: {
+      top: '0px',
+      left: '0px',
+    },
+  })
+
+  const getToolBarPosition = () => {
+    const { top, left } = editedElement?.getClientRects()[0]
+    return {
+      top: `${top + 30}px`,
+      left: `${left}px`,
+    }
+  }
+
+  const handleMouseOver = (el) => {
+    setEditedElement((editedElement) => {
+      if (!editedElement) {
+        if (!el.classList.contains('gjs-selected')) {
+          el.classList.add('hovered')
+        }
+        const dimension = el.getClientRects()[0]
+        setHoveredElement(el)
+        setIconsProp({
+          display: 'inline-block',
+          plus: {
+            top: `${dimension.bottom - 10}px`,
+            left: `${dimension.left + dimension.width / 2}px`,
+          },
+          edit: {
+            top: `${dimension.top - 10 + dimension.height / 2}px`,
+            left: `${dimension.left + dimension.width / 2}px`,
+          },
+        })
+      }
+      return editedElement
+    })
+  }
+
+  const handleMouseOut = (el) => {
+    if (editableIconRef.current.getAttribute('hovered') == 'true') return
+    if (plusIconRef.current.getAttribute('hovered') == 'true') return
+    if (!editedElement) {
+      el.classList.remove('hovered')
+      setIconVisibility(false)
+    }
+  }
+
+  const setIconVisibility = (isVisible) => {
+    setIconsProp((iconsProp) => {
+      const display = isVisible ? 'inline-block' : 'none'
+      return {
+        ...iconsProp,
+        display,
+      }
+    })
+  }
+
+  const handleEditableIconClick = () => {
+    hoveredElement.contentEditable = 'true'
+    hoveredElement.focus()
+    editor.select(hoveredElement)
+    editor
+      .getComponents()
+      .forEach((component) => component.getEl().classList.add('not-gjs-selected'))
+    hoveredElement?.classList.remove('not-gjs-selected')
+    setIconVisibility(false)
+    setHoveredElement(null)
+    const editedElement = hoveredElement
+    setEditedElement(editedElement)
+  }
+
+  const handleSaveButtonClick = () => {
+    editor
+      .getComponents()
+      .forEach((component) => component.getEl().classList.remove('not-gjs-selected'))
+    editor.select(editor.getWrapper())
+    setEditedElement(null)
+    setIconVisibility(true)
+  }
 
   useEffect(() => {
-    const editor = grapesjs.init({
+    const editor = initEditor({
+      editorConfig,
       container: elementRef.current,
-      fromElement: true,
-      height: 'auto',
-      // Disable the storage manager for the moment
-      width: '100%',
-      panels: { defaults: [] },
-      storageManager: false,
-      plugins: ['gjs-blocks-basic'],
-      blockManager: {
-        appendTo: '#blocks',
-      },
+      handleMouseOut,
+      handleMouseOver,
     })
+    setEditor(editor)
+  }, [elementRef])
 
-    const domc = editor.DomComponents
-
-    domc.addType('text', {
-      view: {
-        events: {
-          mouseover: 'onMouseOver',
-          mouseout: 'onMouseOut',
-        },
-
-        onRender() {
-          const plusIcon = document.createElement('div')
-          plusIcon.className = 'plus-icon'
-          plusIcon.innerHTML = iconPlus
-          plusIcon.style.display = 'none'
-          this.el.appendChild(plusIcon)
-        },
-
-        onMouseOver(ev) {
-          ev.stopPropagation()
-          this.el.style.border = '2px dashed #9997FF'
-          this.el.style.transition = 'opacity 0.7s ease-out'
-          this.el.style.backgroundColor = 'rgba(153, 151, 255, 0.1)'
-          const plusIcon = this.el.querySelectorAll('.plus-icon')[0]
-          plusIcon.style.display = 'block'
-        },
-        onMouseOut(ev) {
-          ev.stopPropagation()
-          this.el.style.border = 'none'
-          this.el.style.transition = 'none'
-          this.el.style.backgroundColor = 'inherit'
-          const plusIcon = this.el.querySelectorAll('.plus-icon')[0]
-          plusIcon.style.display = 'none'
-        },
-      },
-    })
-
-    const iframe = document.getElementsByClassName('gjs-frame')[0]
-
-    iframe.addEventListener('load', function () {
-      const elementRef =
-        iframe.contentWindow.document.querySelectorAll('[data-gjs-type=wrapper]')[0]
-      iframe.contentDocument.body.style.backgroundColor = 'transparent'
-      editor.addStyle(
-        '[data-gjs-type="wrapper"]{min-height: 110px;min-width: 250px; overflow-x: hidden; background-color: white; width: fit-content; border-radius: 10px }',
-      )
-      editor.addStyle('.gjs-selected{outline: none!important; outline-offset: 0px!important}')
-      iframe.style.height = elementRef.scrollHeight + 'px'
-      iframe.style.width = elementRef.scrollWidth + 'px'
-      iframe.style.transition = 'none'
-    })
-    editor.on('change:changesCount', function (e) {
-      const elementRef =
-        iframe.contentWindow.document.querySelectorAll('[data-gjs-type=wrapper]')[0]
-      iframe.style.height = elementRef.scrollHeight + 'px'
-      iframe.style.width = elementRef.scrollWidth + 'px'
-    })
-    editor.on('component:update', function (e) {
-      const elementRef =
-        iframe.contentWindow.document.querySelectorAll('[data-gjs-type=wrapper]')[0]
-      iframe.style.height = elementRef.scrollHeight + 'px'
-      iframe.style.width = elementRef.scrollWidth + 'px'
-    })
-    editor.on('component:add', function (e) {
-      const elementRef =
-        iframe.contentWindow.document.querySelectorAll('[data-gjs-type=wrapper]')[0]
-      iframe.style.height = elementRef.scrollHeight + 'px'
-      iframe.style.width = elementRef.scrollWidth + 'px'
-    })
-    editor.on('component:remove', function (e) {
-      const elementRef =
-        iframe.contentWindow.document.querySelectorAll('[data-gjs-type=wrapper]')[0]
-      iframe.style.height = elementRef.scrollHeight + 'px'
-      iframe.style.width = elementRef.scrollWidth + 'px'
-    })
-    editor.on('canvas:drop', function (e) {
-      const elementRef =
-        iframe.contentWindow.document.querySelectorAll('[data-gjs-type=wrapper]')[0]
-      iframe.style.height = elementRef.scrollHeight + 'px'
-      iframe.style.width = elementRef.scrollWidth + 'px'
-    })
-  }, [])
   return (
     <div
       id='willy'
@@ -125,16 +128,46 @@ export default function EditableElement({ top, left, htmlContent }) {
     >
       <style type='text/css'>{grapesjsCss}</style>
       <style type='text/css'>{customStyle}</style>
-      <style type='text/css'>{skinCss}</style>
-      <style type='text/css'>{skinCss2}</style>
-      <style type='text/css'>{skinCss3}</style>
-      <style type='text/css'>{skinCss4}</style>
       <div className='editor-row'>
         <div className='editor-canvas'>
           <div ref={elementRef} style={{ backgroundColor: 'white' }}></div>
+          <div id='willy-container-tool' style={{ position: 'absolute', top: '0px' }}>
+            <div
+              ref={editableIconRef}
+              className='editable-icon'
+              onClick={handleEditableIconClick}
+              onMouseOver={setIconVisibility.bind(this, [true])}
+              style={{
+                top: iconsProp.edit.top,
+                left: iconsProp.edit.left,
+                display: iconsProp.display,
+              }}
+            >
+              <div className='editable-icon-inner'>
+                <EditableIcon />
+              </div>
+            </div>
+            <div
+              ref={plusIconRef}
+              className='plus-icon'
+              onMouseOver={setIconVisibility.bind(this, [true])}
+              style={{
+                top: iconsProp.plus.top,
+                left: iconsProp.plus.left,
+                display: iconsProp.display,
+              }}
+            >
+              <PlusIcon />
+            </div>
+          </div>
         </div>
       </div>
       <div id='blocks' style={{ position: 'fixed' }}></div>
+      {editedElement && (
+        <ToolBarContainer style={getToolBarPosition()}>
+          <ControlToolbar handleSaveButtonClick={handleSaveButtonClick} />
+        </ToolBarContainer>
+      )}
     </div>
   )
 }

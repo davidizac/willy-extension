@@ -1,7 +1,4 @@
 /* Let's highlight canvas boundaries */
-#gjs {
-  border: 3px solid #444;
-}
 
 /* Reset some default styling */
 .gjs-cv-canvas {
@@ -74,23 +71,34 @@
 
 .gjs-frame{
   position: inherit;
+  
 }
-
-/* .gjs-toolbar{
-  right: -30px;
-  left: auto!important;
-  border-radius: 13px;
-  top: 0;
-}
-
-.gjs-toolbar div{
-  display: flex;
-  flex-direction: column;
-} */
 
 .gjs-toolbar{
   display: none;
 }
 .gjs-rte-toolbar{
   display: none;
+}
+.gjs-badge {
+  display: none !important;
+}
+.gjs-frame{
+  transition: none;
+}
+
+.editable-icon-inner{
+  width: 21px;
+  height: 21px;
+  background-color: #FF9200;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.plus-icon, .editable-icon{
+  position: absolute;
+  cursor: pointer;
+  display: inline-block;
+  z-index: 3;
 }

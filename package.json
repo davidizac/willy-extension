@@ -24,6 +24,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@fontsource/inter": "^4.5.12",
+    "@react-hook/resize-observer": "^1.2.6",
     "@tinymce/tinymce-react": "^4.2.0",
     "ckeditor5": "^35.0.1",
     "eslint-plugin-react": "^7.30.1",
