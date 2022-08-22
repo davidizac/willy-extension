@@ -7,6 +7,8 @@ import { initEditor } from '../../utils/editor'
 import { EditableIcon, PlusIcon } from '../../icons'
 import ControlToolbar from '../ControlToolbar'
 import styled from 'styled-components'
+import { useSize } from '../../hooks'
+import StyleToolbar from '../StyleToolbar'
 
 const ToolBarContainer = styled.div`
   position: absolute;
@@ -21,6 +23,8 @@ export default function EditableElement({ top, left, editorConfig }) {
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null)
   const [editedElement, setEditedElement] = useState<HTMLElement | null>(null)
 
+  const size = useSize(elementRef)
+
   const [iconsProp, setIconsProp] = useState({
     display: 'none',
     edit: {
@@ -34,9 +38,9 @@ export default function EditableElement({ top, left, editorConfig }) {
   })
 
   const getToolBarPosition = () => {
-    const { top, left } = editedElement?.getClientRects()[0]
+    const { top, left, height } = editedElement?.getClientRects()[0]
     return {
-      top: `${top + 30}px`,
+      top: `${top + height + 30}px`,
       left: `${left}px`,
     }
   }
@@ -164,7 +168,8 @@ export default function EditableElement({ top, left, editorConfig }) {
       </div>
       <div id='blocks' style={{ position: 'fixed' }}></div>
       {editedElement && (
-        <ToolBarContainer style={getToolBarPosition()}>
+        <ToolBarContainer style={{ ...getToolBarPosition(), display: 'flex', columnGap: '8px' }}>
+          <StyleToolbar />
           <ControlToolbar handleSaveButtonClick={handleSaveButtonClick} />
         </ToolBarContainer>
       )}

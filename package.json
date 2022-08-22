@@ -46,6 +46,7 @@
     "react-dom": "^18.2.0",
     "react-reconciler": "^0.29.0",
     "react-shadow": "^19.0.3",
+    "react-tooltip": "^4.2.21",
     "styled-components": "^5.3.5",
     "tinymce": "^6.1.2"
   },
