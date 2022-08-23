@@ -169,7 +169,7 @@ export default function EditableElement({ top, left, editorConfig }) {
       <div id='blocks' style={{ position: 'fixed' }}></div>
       {editedElement && (
         <ToolBarContainer style={{ ...getToolBarPosition(), display: 'flex', columnGap: '8px' }}>
-          <StyleToolbar />
+          <StyleToolbar left={left} />
           <ControlToolbar handleSaveButtonClick={handleSaveButtonClick} />
         </ToolBarContainer>
       )}

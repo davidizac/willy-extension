@@ -2557,6 +2557,11 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
+"@react-hook/toggle@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@react-hook/toggle/-/toggle-2.0.1.tgz#eb02ad7b44c8e8165f4b7f572a9fcbc52b37616b"
+  integrity sha512-HiXmUmYFYusRwKgD6U2W/rN1vaxzcdvj8+lES9KobxusxWRVuHXdFoCReSpZo24y+FRPWZSa+ZcnZZim0XX20g==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.npmjs.org/@sinonjs/commons/-/commons-1.8.3.tgz"
