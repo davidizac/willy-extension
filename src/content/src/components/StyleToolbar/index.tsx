@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import ReactTooltip from 'react-tooltip'
+import { useState } from 'react'
 
 import {
   BackgrondIcon,
@@ -125,55 +126,180 @@ const FontSizeInput = styled.input`
 `
 
 export default function StyleToolbar() {
+  const [activeItem, setActiveItem] = useState()
+
+  const handleTextClick = (e) => {
+    setActiveItem(e.target.id)
+  }
+
+  const borderBottomStyle = '2px solid #DD5584'
+
+  const TextToolBar = () => {
+    const TextItems = {
+      TEXT_TYPE: 'Text Type',
+      TYPOGRAPHY: 'Typography',
+      FONT_SIZE: 'Font Size',
+      FONT_COLOR: 'Font Color',
+      BOLD: 'Bold',
+      ITALIC: 'Italic',
+      UNDERLINE: 'Underline',
+      ALIGN: 'Align',
+      LIST: 'List',
+      EMOJI: 'Emoji',
+      PERSO: 'Personalization',
+      LINK: 'Link',
+    }
+    return (
+      <NotLastToolBarSection sectionLabel={'Text'}>
+        <HeaderSize
+          id={TextItems.TEXT_TYPE}
+          style={{
+            borderBottom: `${activeItem == TextItems.TEXT_TYPE ? borderBottomStyle : 'none'}`,
+          }}
+          onClick={() => handleTextClick(TextItems.TEXT_TYPE)}
+          data-tip='Text Type'
+        >
+          Normal
+        </HeaderSize>
+        <ToolBarItem
+          id={TextItems.TYPOGRAPHY}
+          style={{
+            borderBottom: `${activeItem == TextItems.TYPOGRAPHY ? borderBottomStyle : 'none'}`,
+          }}
+          onClick={() => handleTextClick(TextItems.TYPOGRAPHY)}
+          data-tip='Typography'
+        >
+          <TypographyIcon />
+        </ToolBarItem>
+        <FontSize
+          id={TextItems.FONT_SIZE}
+          style={{
+            borderBottom: `${activeItem == TextItems.FONT_SIZE ? borderBottomStyle : 'none'}`,
+          }}
+          onClick={() => handleTextClick(TextItems.FONT_SIZE)}
+          data-tip='Font Size'
+        >
+          <FontSizeInner>
+            <FontSizeInput type='tel' max={99} min={2} value={14} />
+          </FontSizeInner>
+        </FontSize>
+        <ToolBarItem
+          id={TextItems.FONT_COLOR}
+          style={{
+            borderBottom: `${activeItem == TextItems.FONT_COLOR ? borderBottomStyle : 'none'}`,
+          }}
+          onClick={() => handleTextClick(TextItems.FONT_COLOR)}
+          data-tip='Font Color'
+        >
+          <FontColorIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.BOLD}
+          style={{ borderBottom: `${activeItem == TextItems.BOLD ? borderBottomStyle : 'none'}` }}
+          onClick={() => handleTextClick(TextItems.BOLD)}
+          data-tip='Bold'
+        >
+          <TextBoldIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.ITALIC}
+          style={{ borderBottom: `${activeItem == TextItems.ITALIC ? borderBottomStyle : 'none'}` }}
+          onClick={() => handleTextClick(TextItems.ITALIC)}
+          data-tip='Italic'
+        >
+          <TextItalicIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.UNDERLINE}
+          style={{
+            borderBottom: `${activeItem == TextItems.UNDERLINE ? borderBottomStyle : 'none'}`,
+          }}
+          onClick={() => handleTextClick(TextItems.UNDERLINE)}
+          data-tip='Underline'
+        >
+          <TextUnderLineIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.ALIGN}
+          style={{ borderBottom: `${activeItem == TextItems.ALIGN ? borderBottomStyle : 'none'}` }}
+          onClick={() => handleTextClick(TextItems.ALIGN)}
+          data-tip='Align'
+        >
+          <JustifyContentIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.LIST}
+          style={{ borderBottom: `${activeItem == TextItems.LIST ? borderBottomStyle : 'none'}` }}
+          onClick={() => handleTextClick(TextItems.LIST)}
+          data-tip='List'
+        >
+          <TextListIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.EMOJI}
+          style={{ borderBottom: `${activeItem == TextItems.EMOJI ? borderBottomStyle : 'none'}` }}
+          onClick={() => handleTextClick(TextItems.EMOJI)}
+          data-tip='Emoji'
+        >
+          <EmojiIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.PERSO}
+          style={{ borderBottom: `${activeItem == TextItems.PERSO ? borderBottomStyle : 'none'}` }}
+          onClick={() => handleTextClick(TextItems.PERSO)}
+          data-tip='Personalization'
+        >
+          <TextPersonalizeIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={TextItems.LINK}
+          style={{ borderBottom: `${activeItem == TextItems.LINK ? borderBottomStyle : 'none'}` }}
+          onClick={() => handleTextClick(TextItems.LINK)}
+          data-tip='Link'
+        >
+          <TextLinkIcon />
+        </ToolBarItem>
+      </NotLastToolBarSection>
+    )
+  }
+
+  const SectionToolBar = () => {
+    const SectionItems = {
+      SPACING: 'Spacing',
+      BACKGROUND: 'Background',
+    }
+    return (
+      <ToolbarSection sectionLabel={'Section'}>
+        <ToolBarItem
+          id={SectionItems.SPACING}
+          style={{
+            borderBottom: `${activeItem == SectionItems.SPACING ? borderBottomStyle : 'none'}`,
+          }}
+          onClick={() => handleTextClick(SectionItems.SPACING)}
+          data-tip='Spacing'
+        >
+          <SectionPaddingIcon />
+        </ToolBarItem>
+        <ToolBarItem
+          id={SectionItems.BACKGROUND}
+          style={{
+            borderBottom: `${activeItem == SectionItems.BACKGROUND ? borderBottomStyle : 'none'}`,
+          }}
+          onClick={() => handleTextClick(SectionItems.BACKGROUND)}
+          data-tip='Background'
+          section={'SECTION'}
+        >
+          <BackgrondIcon />
+        </ToolBarItem>
+      </ToolbarSection>
+    )
+  }
+
   return (
     <SectionToolbar>
       <ToolBar>
-        <NotLastToolBarSection sectionLabel={'Text'}>
-          <HeaderSize data-tip='hello world'>Normal</HeaderSize>
-          <ToolBarItem data-tip='Typography'>
-            <TypographyIcon />
-          </ToolBarItem>
-          <FontSize data-tip='Font Size'>
-            <FontSizeInner>
-              <FontSizeInput type='tel' max={99} min={2} value={14} />
-            </FontSizeInner>
-          </FontSize>
-          <ToolBarItem data-tip='Font Color'>
-            <FontColorIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Bold'>
-            <TextBoldIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Italic'>
-            <TextItalicIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Underline'>
-            <TextUnderLineIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Align'>
-            <JustifyContentIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='List'>
-            <TextListIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Emoji'>
-            <EmojiIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Personalization'>
-            <TextPersonalizeIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Link'>
-            <TextLinkIcon />
-          </ToolBarItem>
-        </NotLastToolBarSection>
-        <ToolbarSection sectionLabel={'Section'}>
-          <ToolBarItem data-tip='Spacing'>
-            <SectionPaddingIcon />
-          </ToolBarItem>
-          <ToolBarItem data-tip='Background' section={'SECTION'}>
-            <BackgrondIcon />
-          </ToolBarItem>
-        </ToolbarSection>
+        <TextToolBar />
+        <SectionToolBar />
       </ToolBar>
       <ReactTooltip effect='solid' />
     </SectionToolbar>
