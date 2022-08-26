@@ -15,6 +15,7 @@ export default function EditorContainer({ shouldStartInspect }) {
       top: element.getClientRects()[0].top + 'px',
       left: element.getClientRects()[0].left + 'px',
     })
+    document.body.style.overflow = 'hidden'
     setShouldDisplayElement(true)
   }
 

@@ -21,7 +21,9 @@ export function initEditor({ editorConfig, container, handleMouseOver, handleMou
     },
   })
   const comps = editor.DomComponents
-  const iframe = document.getElementsByClassName('gjs-frame')[0]
+  const iframe = document
+    .getElementsByTagName('willy-container')[0]
+    .children[1].shadowRoot.children[0].getElementsByClassName('gjs-frame')[0]
 
   iframe.style.width = width + 1 + 'px'
 

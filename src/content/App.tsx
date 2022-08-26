@@ -1,8 +1,10 @@
-import { ChakraProvider, extendTheme, Button, Box } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
 import root from 'react-shadow/emotion'
+import root2 from 'react-shadow/styled-components'
+
 import { theme } from './src/theme'
 import EditorContainer from './src/components/EditorContainer'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import NavBar from './src/components/NavBar'
 
 export default function App() {
@@ -16,7 +18,9 @@ export default function App() {
           <NavBar onInspect={handleClick} />
         </ChakraProvider>
       </root.div>
-      <EditorContainer shouldStartInspect={startInspect} />
+      <root2.div className='willy-editor'>
+        <EditorContainer shouldStartInspect={startInspect} />
+      </root2.div>
     </>
   )
 }
