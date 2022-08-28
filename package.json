@@ -53,6 +53,7 @@
     "react-reconciler": "^0.29.0",
     "react-shadow": "^19.0.3",
     "react-tooltip": "^4.2.21",
+    "react-transition-group": "^4.4.5",
     "styled-components": "^5.3.5",
     "tinymce": "^6.1.2",
     "unsplash-react": "^0.3.0"

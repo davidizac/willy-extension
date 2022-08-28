@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useInspector } from '../Inspector'
-import EditableElement from '../EditableElement'
+import EditableElement from '../Editor'
 
 export default function EditorContainer({ shouldStartInspect }) {
   const [elementPosition, setElementPosition] = useState({

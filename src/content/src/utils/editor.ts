@@ -89,7 +89,7 @@ export function initEditor({ editorConfig, container, handleMouseOver, handleMou
       `.gjs-selected, .hovered{ outline: none!important;  outline-offset: 0px!important; box-shadow: 5px 10px 18px #888888;transition: box-shadow 0.5s ease-out }`,
     )
     editor.addStyle(
-      `.hovered{ border: 2px dashed #FF9200!important; cursor: default !important; user-select: none !important; transition: background-color 0.5s ease-out, border 0.5s ease-out; background-color: rgba(255, 146, 0, 0.4)}`,
+      `.hovered{ border: 2px dashed #FF9200!important; cursor: default !important; user-select: none !important; transition: background-color 0.5s ease-out, border 0.5s ease-out, opacity 0.5s ease-out; background-color: rgba(255, 146, 0, 0.4)}`,
     )
     editor.addStyle(
       `.not-gjs-selected { opacity: 0.7; background-color: rgba(192, 192, 192, 0.7);user-select: none !important;}`,

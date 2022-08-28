@@ -36,10 +36,10 @@ transition: border-color 0.3s linear;
 text-overflow: ellipsis;
 height: 45px;
 `
-const WillyPopup = styled.div`
+const WillyPopup = styled.div<{ borderRadius: string }>`
   animation: popup-animation 0.3s ease-in-out;
   transform: translateZ(0);
-  border-radius: 5px;
+  border-radius: ${(props) => props.borderRadius || '5px'};
   text-align: left;
   cursor: auto;
   display: flex;
@@ -467,7 +467,11 @@ export const TypographyPopup = () => {
 }
 
 export const PaletteColorPopup = () => {
-  return <PaletteColor width={247} />
+  return (
+    <WillyPopup borderRadius={'10px'}>
+      <PaletteColor width={247} />
+    </WillyPopup>
+  )
 }
 
 export const AlignPopup = () => {
