@@ -5,15 +5,8 @@ import customStyle from '!raw-loader!./style.css'
 import { useEffect, useRef, useState } from 'react'
 import { initEditor } from '../../utils/editor'
 import { EditableIcon, PlusIcon } from '../../icons'
-import ControlToolbar from '../ControlToolbar'
-import styled from 'styled-components'
 import { useSize } from '../../hooks'
-import StyleToolbar from '../StyleToolbar'
-
-const ToolBarContainer = styled.div`
-  position: absolute;
-  z-index: 2;
-`
+import { Toolbar } from '../Toolbar'
 
 export default function EditableElement({ top, left, editorConfig }) {
   const elementRef = useRef(null)
@@ -23,8 +16,9 @@ export default function EditableElement({ top, left, editorConfig }) {
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null)
   const [editedElement, setEditedElement] = useState<HTMLElement | null>(null)
 
-  const size = useSize(elementRef)
-
+  // Hook called whenever there is a change to the size of the edited element.
+  // We need to get this changing information to update the top position of the toolbar
+  const editedElementSize = useSize(elementRef)
   const [iconsProp, setIconsProp] = useState({
     display: 'none',
     edit: {
@@ -36,14 +30,6 @@ export default function EditableElement({ top, left, editorConfig }) {
       left: '0px',
     },
   })
-
-  const getToolBarPosition = () => {
-    const { top, left, height } = editedElement?.getClientRects()[0]
-    return {
-      top: `${top + height + 30}px`,
-      left: `${left}px`,
-    }
-  }
 
   const handleMouseOver = (el) => {
     setEditedElement((editedElement) => {
@@ -120,7 +106,6 @@ export default function EditableElement({ top, left, editorConfig }) {
     })
     setEditor(editor)
   }, [elementRef])
-
   return (
     <div
       id='willy'
@@ -168,10 +153,11 @@ export default function EditableElement({ top, left, editorConfig }) {
       </div>
       <div id='blocks' style={{ position: 'fixed' }}></div>
       {editedElement && (
-        <ToolBarContainer style={{ ...getToolBarPosition(), display: 'flex', columnGap: '8px' }}>
-          <StyleToolbar left={left} />
-          <ControlToolbar handleSaveButtonClick={handleSaveButtonClick} />
-        </ToolBarContainer>
+        <Toolbar
+          editedElement={editedElement}
+          handleSaveButtonClick={handleSaveButtonClick}
+          editedElementSize={editedElementSize}
+        />
       )}
     </div>
   )

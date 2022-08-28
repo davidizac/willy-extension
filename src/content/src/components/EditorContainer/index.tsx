@@ -34,7 +34,7 @@ export default function EditorContainer({ shouldStartInspect }) {
     <div
       style={{
         position: 'absolute',
-        zIndex: 0,
+        zIndex: 99999999999,
         top: '0px',
         left: '0px',
         width: '100%',

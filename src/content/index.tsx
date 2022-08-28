@@ -2,9 +2,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 
 const willyContainer = document.createElement('willy-container')
-// willyContainer.classList.add('willy-container')
+willyContainer.id = 'willy-builder'
 
-document.body.append(willyContainer)
+document.documentElement.append(willyContainer)
 
 const root = createRoot(willyContainer)
 

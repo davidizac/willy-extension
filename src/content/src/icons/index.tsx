@@ -122,12 +122,10 @@ export const TypographyIcon = () => {
 export const FontColorIcon = () => {
   return (
     <svg
-      width='21'
-      height='21'
       viewBox='0 0 17 21'
       fill='rgb(73, 80, 87)'
       xmlns='http://www.w3.org/2000/svg'
-      style={{ width: '22px!important', height: '22px!important', display: 'block' }}
+      style={{ width: '24px', height: '24px', display: 'block', marginTop: '5px' }}
     >
       <path
         fillRule='evenodd'
@@ -144,8 +142,6 @@ export const FontColorIcon = () => {
 export const TextBoldIcon = () => {
   return (
     <svg
-      width='10'
-      height='12'
       viewBox='0 0 10 12'
       fill='#3D4A52'
       xmlns='http://www.w3.org/2000/svg'
