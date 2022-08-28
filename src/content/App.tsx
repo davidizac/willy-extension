@@ -1,28 +1,25 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import root from 'react-shadow/emotion'
-import root2 from 'react-shadow/styled-components'
-
+import ManagerRoot from 'react-shadow/emotion'
+import EditorRoot from 'react-shadow/styled-components'
 import { theme } from './src/theme/chakra-theme'
 import EditorContainer from './src/components/EditorContainer'
-import { useCallback, useState } from 'react'
-import NavBar from './src/components/NavBar'
-import { AnimationsStyle } from './src/theme/editor-theme'
+import { GlobalCSSForEditor, GlobalCSSForChakra } from './src/theme/global'
+import ManagerContainer from './src/components/ManagerContainer'
+import { RecoilRoot } from 'recoil'
 
 export default function App() {
-  const [startInspect, setStartInspect] = useState(false)
-  const handleClick = useCallback(() => setStartInspect(true), [startInspect])
-
   return (
-    <>
-      <root.div>
+    <RecoilRoot>
+      <ManagerRoot.div>
         <ChakraProvider theme={theme}>
-          <NavBar onInspect={handleClick} />
+          <GlobalCSSForChakra />
+          <ManagerContainer />
         </ChakraProvider>
-      </root.div>
-      <root2.div className='willy-editor'>
-        <AnimationsStyle />
-        <EditorContainer shouldStartInspect={startInspect} />
-      </root2.div>
-    </>
+      </ManagerRoot.div>
+      <EditorRoot.div>
+        <GlobalCSSForEditor />
+        <EditorContainer />
+      </EditorRoot.div>
+    </RecoilRoot>
   )
 }

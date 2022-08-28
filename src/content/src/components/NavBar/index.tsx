@@ -11,11 +11,16 @@ import {
   PopoverContent,
   useColorModeValue,
   ButtonGroup,
-  Heading,
+  Slide,
   Spacer,
+  useDisclosure,
 } from '@chakra-ui/react'
 
 import { ChevronRightIcon, AddIcon } from '@chakra-ui/icons'
+import { useEffect } from 'react'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { inspectingState } from '../../atoms/inspect.state'
+import { focusingState } from '../../atoms/focus.state'
 
 interface NavItem {
   label: string
@@ -53,17 +58,30 @@ const FLOW_TYPES: Array<NavItem> = [
   },
 ]
 
-export default function NavBar({ onInspect }) {
+export default function NavBar() {
+  const { isOpen, onToggle } = useDisclosure()
+  const [, setIsInspect] = useRecoilState(inspectingState)
+  const isFocusing = useRecoilValue(focusingState)
+
+  const handleClick = () => {
+    onToggle()
+    setIsInspect(true)
+  }
+
+  useEffect(() => {
+    onToggle()
+  }, [])
+
   const AddButton = () => {
-    const linkColor = useColorModeValue('gray.600', 'gray.200')
-    const linkHoverColor = useColorModeValue('gray.800', 'white')
-    const popoverContentBgColor = useColorModeValue('white', 'gray.800')
+    const linkColor = useColorModeValue('lightCyan.600', 'lightCyan.200')
+    const linkHoverColor = useColorModeValue('lightCyan.800', 'white')
+    const popoverContentBgColor = useColorModeValue('white', 'lightCyan.800')
 
     return (
       <Box key={'Add'}>
         <Popover trigger={'hover'} placement={'bottom-start'}>
           <PopoverTrigger>
-            <Button size='lg' colorScheme='gray' borderRadius={'50px'} p={'10px'} mt={'-65px'}>
+            <Button size='lg' colorScheme='lightCyan' borderRadius={'50px'} p={'10px'} mt={'-65px'}>
               <Icon as={AddIcon} />
             </Button>
           </PopoverTrigger>
@@ -90,16 +108,20 @@ export default function NavBar({ onInspect }) {
   const DesktopSubNav = ({ label, description, id, icon }: NavItem) => {
     return (
       <Link
-        onClick={onInspect}
+        onClick={handleClick}
         role={'group'}
         display={'block'}
         p={2}
         rounded={'md'}
-        _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}
+        _hover={{ bg: 'lightCyan.200' }}
       >
         <Stack direction={'row'} align={'center'}>
           <Box>
-            <Text transition={'all .3s ease'} _groupHover={{ color: 'pink.400' }} fontWeight={500}>
+            <Text
+              transition={'all .3s ease'}
+              _groupHover={{ color: 'lightCyan.900' }}
+              fontWeight={500}
+            >
               {label}
             </Text>
             <Text fontSize={'sm'}>{description}</Text>
@@ -113,37 +135,48 @@ export default function NavBar({ onInspect }) {
             align={'center'}
             flex={1}
           >
-            <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
+            <Icon color={'lightCyan.400'} w={5} h={5} as={ChevronRightIcon} />
           </Flex>
         </Stack>
       </Link>
     )
   }
   return (
-    <Box
-      pos={'fixed'}
-      bottom={'0px'}
-      bg={'white'}
-      width={'100%'}
-      zIndex={'100000000000'}
-      height={'auto'}
-      px={'20px'}
-      py={'10px'}
-    >
-      <Flex minWidth='max-content' alignItems='center' gap='3'>
-        <Box p='2'>
-          <Heading size='md'>Willy App</Heading>
-        </Box>
-        <Spacer />
-        <Box p='2'>
-          <AddButton />
-        </Box>
-        <Spacer />
-        <ButtonGroup gap='2'>
-          <Button variant='primary'>Sign Up</Button>
-          <Button variant='secondary'>Log in</Button>
-        </ButtonGroup>
-      </Flex>
-    </Box>
+    <Slide direction='bottom' in={isOpen} style={{ zIndex: 100000000000 }}>
+      <Box bg={'white'} width={'100%'} height={'auto'} px={'20px'} py={'10px'}>
+        {!isFocusing && (
+          <Button
+            variant={'outline'}
+            position='absolute'
+            top={'-34px'}
+            left={'0px'}
+            py={'2px'}
+            px={'10px'}
+            borderRadius={'4px'}
+            onClick={onToggle}
+          >
+            <Text fontSize='md'>{isOpen ? 'Hide' : 'Show'}</Text>
+          </Button>
+        )}
+        <Flex minWidth='max-content' alignItems='center' gap='3'>
+          <Box p='2'>
+            <Text size='lg' colorScheme={'mellowApricot'}>
+              Willy App
+            </Text>
+          </Box>
+          <Spacer />
+          {isOpen && (
+            <Box p='2'>
+              <AddButton />
+            </Box>
+          )}
+          <Spacer />
+          <ButtonGroup gap='2'>
+            <Button variant='primary'>Sign Up</Button>
+            <Button variant='outline'>Log in</Button>
+          </ButtonGroup>
+        </Flex>
+      </Box>
+    </Slide>
   )
 }

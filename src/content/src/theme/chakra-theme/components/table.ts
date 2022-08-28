@@ -18,7 +18,7 @@ const variants = {
   simple: (props: StyleFunctionProps) => ({
     th: {
       color: 'muted',
-      bg: mode('gray.50', transparentize('gray.700', 0.4)(props.theme))(props),
+      bg: mode('lightCyan.50', transparentize('lightCyan.700', 0.4)(props.theme))(props),
     },
   }),
   striped: (props: StyleFunctionProps) => ({
@@ -46,7 +46,7 @@ const variants = {
             borderBottomWidth: '0px',
           },
           td: {
-            bg: mode('gray.50', transparentize('gray.700', 0.4)(props.theme))(props),
+            bg: mode('lightCyan.50', transparentize('lightCyan.700', 0.4)(props.theme))(props),
           },
         },
       },

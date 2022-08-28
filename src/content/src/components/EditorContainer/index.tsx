@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useInspector } from '../Inspector'
 import EditableElement from '../Editor'
+import { inspectingState } from '../../atoms/inspect.state'
+import { useRecoilValue } from 'recoil'
 
-export default function EditorContainer({ shouldStartInspect }) {
+export default function EditorContainer() {
   const [elementPosition, setElementPosition] = useState({
     top: '0px',
     left: '0px',
@@ -19,12 +21,14 @@ export default function EditorContainer({ shouldStartInspect }) {
     setShouldDisplayElement(true)
   }
 
+  const isInspecting = useRecoilValue(inspectingState)
   const { startInspect } = useInspector(handleClickEvent)
+
   useEffect(() => {
-    if (shouldStartInspect) {
+    if (isInspecting) {
       startInspect()
     }
-  }, [shouldStartInspect])
+  }, [isInspecting])
 
   const editorConfig = {
     width: 250,

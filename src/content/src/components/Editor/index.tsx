@@ -7,6 +7,8 @@ import { initEditor } from '../../utils/editor'
 import { EditableIcon, PlusIcon } from '../../icons'
 import { useSize } from '../../hooks'
 import { Toolbar } from '../Toolbar'
+import { focusingState } from '../../atoms/focus.state'
+import { useRecoilState } from 'recoil'
 
 export default function EditableElement({ top, left, editorConfig }) {
   const elementRef = useRef(null)
@@ -15,6 +17,8 @@ export default function EditableElement({ top, left, editorConfig }) {
   const [editor, setEditor] = useState()
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null)
   const [editedElement, setEditedElement] = useState<HTMLElement | null>(null)
+  const [, setIsFocus] = useRecoilState(focusingState)
+
 
   // Hook called whenever there is a change to the size of the edited element.
   // We need to get this changing information to update the top position of the toolbar
@@ -86,6 +90,7 @@ export default function EditableElement({ top, left, editorConfig }) {
     setHoveredElement(null)
     const editedElement = hoveredElement
     setEditedElement(editedElement)
+    setIsFocus(true)
   }
 
   const handleSaveButtonClick = () => {

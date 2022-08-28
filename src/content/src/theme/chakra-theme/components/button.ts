@@ -25,59 +25,65 @@ const variants = {
     props.theme.components['Button']['variants']['solid']({
       ...props,
       variant: 'solid',
-      colorScheme: 'brand',
+      colorScheme: 'mellowApricot',
     }),
   'primary-on-accent': () => ({
-    bg: 'brand.50',
-    color: 'brand.600',
-    _hover: { bg: 'brand.100' },
-    _active: { bg: 'brand.100' },
+    bg: 'mellowApricot.50',
+    color: 'mellowApricot.600',
+    _hover: { bg: 'mellowApricot.100' },
+    _active: { bg: 'mellowApricot.100' },
   }),
   secondary: (props: StyleFunctionProps) =>
     props.theme.components['Button']['variants']['outline']({
       ...props,
       variant: 'outline',
-      colorScheme: 'gray',
+      colorScheme: 'lightCyan',
     }),
   'secondary-on-accent': {
     color: 'white',
-    borderColor: 'brand.50',
+    borderColor: 'mellowApricot.50',
     borderWidth: '1px',
     _hover: { bg: 'whiteAlpha.200' },
     _active: { bg: 'whiteAlpha.200' },
   },
   outline: (props: StyleFunctionProps) => ({
     color: 'emphasized',
-    bg: mode('white', 'gray.800')(props),
+    bg: mode('white', 'lightCyan.800')(props),
     _hover: {
       bg: mode(
-        darken('gray.50', 1)(props.theme),
-        transparentize('gray.700', 0.4)(props.theme),
+        darken('lightCyan.50', 1)(props.theme),
+        transparentize('lightCyan.700', 0.4)(props.theme),
       )(props),
     },
     _checked: {
-      bg: mode('gray.100', 'gray.700')(props),
+      bg: mode('lightCyan.100', 'lightCyan.700')(props),
     },
     _active: {
-      bg: mode('gray.100', 'gray.700')(props),
+      bg: mode('lightCyan.100', 'lightCyan.700')(props),
     },
   }),
   ghost: (props: StyleFunctionProps) => ({
     color: 'emphasized',
     _hover: {
-      bg: mode(darken('gray.50', 1)(props.theme), darken('gray.700', 4)(props.theme))(props),
+      bg: mode(
+        darken('lightCyan.50', 1)(props.theme),
+        darken('lightCyan.700', 4)(props.theme),
+      )(props),
     },
     _active: {
-      bg: mode(darken('gray.50', 1)(props.theme), darken('gray.700', 4)(props.theme))(props),
+      bg: mode(
+        darken('lightCyan.50', 1)(props.theme),
+        darken('lightCyan.700', 4)(props.theme),
+      )(props),
     },
     _activeLink: {
-      bg: mode('gray.100', 'gray.700')(props),
+      bg: mode('lightCyan.100', 'lightCyan.700')(props),
     },
   }),
   'ghost-on-accent': (props: StyleFunctionProps) => ({
-    color: 'brand.50',
+    color: 'mellowApricot.50',
     _hover: {
-      bg: transparentize('brand.500', 0.67)(props.theme),
+      bg: transparentize('mellowApricot.500', 0.67)(props.theme),
     },
     _activeLink: {
       color: 'white',
@@ -85,7 +91,7 @@ const variants = {
     },
   }),
   link: (props: StyleFunctionProps) => {
-    if (props.colorScheme === 'gray') {
+    if (props.colorScheme === 'lightCyan') {
       return {
         color: 'muted',
         _hover: {
@@ -114,7 +120,7 @@ const variants = {
       height: 'auto',
       lineHeight: 'normal',
       verticalAlign: 'baseline',
-      color: 'brand.50',
+      color: 'mellowApricot.50',
       _hover: {
         color: 'white',
       },

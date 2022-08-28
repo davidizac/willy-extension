@@ -27,7 +27,7 @@ const baseStyle = {
 const variants = {
   outline: (props: StyleFunctionProps) => ({
     menu: {
-      bg: mode('white', 'gray.800')(props),
+      bg: mode('white', 'lightCyan.800')(props),
       boxShadow: mode('sm', 'sm-dark')(props),
       color: 'inherit',
       minW: '3xs',
@@ -37,16 +37,16 @@ const variants = {
     },
     option: {
       _selected: {
-        bg: mode('gray.100', 'gray.700')(props),
+        bg: mode('lightCyan.100', 'lightCyan.700')(props),
       },
     },
     field: {
       border: '1px solid',
       borderColor: 'inherit',
-      bg: mode('white', 'gray.800')(props),
+      bg: mode('white', 'lightCyan.800')(props),
 
       _hover: {
-        borderColor: mode('gray.300', 'whiteAlpha.400')(props),
+        borderColor: mode('lightCyan.300', 'whiteAlpha.400')(props),
       },
       _disabled: {
         opacity: 0.4,
@@ -62,17 +62,17 @@ const variants = {
         boxShadow: `0 0 0 1px ${getColor(props.theme, mode('red.500', 'red.300')(props))}`,
       },
       _focus: {
-        borderColor: mode('brand.500', 'brand.200')(props),
+        borderColor: mode('mellowApricot.500', 'mellowApricot.200')(props),
         boxShadow: mode(
-          `0px 0px 0px 1px ${transparentize(`brand.500`, 1.0)(props.theme)}`,
-          `0px 0px 0px 1px ${transparentize(`brand.200`, 1.0)(props.theme)}`,
+          `0px 0px 0px 1px ${transparentize(`mellowApricot.500`, 1.0)(props.theme)}`,
+          `0px 0px 0px 1px ${transparentize(`mellowApricot.200`, 1.0)(props.theme)}`,
         )(props),
       },
       _expanded: {
-        borderColor: mode('brand.500', 'brand.200')(props),
+        borderColor: mode('mellowApricot.500', 'mellowApricot.200')(props),
         boxShadow: mode(
-          `0px 0px 0px 1px ${transparentize(`brand.500`, 1.0)(props.theme)}`,
-          `0px 0px 0px 1px ${transparentize(`brand.200`, 1.0)(props.theme)}`,
+          `0px 0px 0px 1px ${transparentize(`mellowApricot.500`, 1.0)(props.theme)}`,
+          `0px 0px 0px 1px ${transparentize(`mellowApricot.200`, 1.0)(props.theme)}`,
         )(props),
       },
     },
@@ -141,6 +141,6 @@ export default {
   defaultProps: {
     size: 'md',
     variant: 'outline',
-    colorScheme: 'brand',
+    colorScheme: 'mellowApricot',
   },
 }

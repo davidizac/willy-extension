@@ -16,7 +16,7 @@ const brandsColors = {
     '800': '#663B00',
     '900': '#331D00',
   },
-  gray: {
+  lightCyan: {
     '50': '#EAFAF9',
     '100': '#C5F1ED',
     '200': '#A0E9E2',
@@ -40,7 +40,7 @@ const brandsColors = {
     '800': '#13534E',
     '900': '#0A2927',
   },
-  brand: {
+  mellowApricot: {
     '50': '#FFF4E5',
     '100': '#FFE1B8',
     '200': '#FFCD8A',
@@ -53,7 +53,6 @@ const brandsColors = {
     '900': '#331D00',
   },
 }
-
 export const theme: Record<string, any> = extendTheme({
   ...foundations,
   components: { ...components },

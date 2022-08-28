@@ -5,7 +5,6 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import DotenvFlow from 'dotenv-flow-webpack'
 import webpack from 'webpack'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
 const isDev = process.env.NODE_ENV !== 'production'
 
 const srcDir = path.join(__dirname, 'src')

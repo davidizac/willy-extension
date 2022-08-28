@@ -64,7 +64,6 @@ export const usePositionCorrection = (ref, { leftPos, topPos }) => {
     }
 
     if (intersectionData.boundingClientRect?.width > intersectionData.intersectionRect?.width) {
-      console.log(intersectionData)
       const diff =
         intersectionData.boundingClientRect?.width - intersectionData.intersectionRect?.width
       const isElementOnLeftSideOfWindow =

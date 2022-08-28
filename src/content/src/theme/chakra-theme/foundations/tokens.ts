@@ -1,48 +1,48 @@
 export default {
   colors: {
     'bg-canvas': {
-      default: 'gray.50',
-      _dark: 'gray.900',
+      default: 'lightCyan.50',
+      _dark: 'lightCyan.900',
     },
     'bg-surface': {
       default: 'white',
-      _dark: 'gray.800',
+      _dark: 'lightCyan.800',
     },
     'bg-subtle': {
-      default: 'gray.50',
-      _dark: 'gray.700',
+      default: 'lightCyan.50',
+      _dark: 'lightCyan.700',
     },
     'bg-muted': {
-      default: 'gray.100',
-      _dark: 'gray.600',
+      default: 'lightCyan.100',
+      _dark: 'lightCyan.600',
     },
     default: {
-      default: 'gray.900',
+      default: 'lightCyan.900',
       _dark: 'white',
     },
     inverted: {
       default: 'white',
-      _dark: 'gray.900',
+      _dark: 'lightCyan.900',
     },
     emphasized: {
-      default: 'gray.700',
-      _dark: 'gray.100',
+      default: 'lightCyan.700',
+      _dark: 'lightCyan.100',
     },
     muted: {
-      default: 'gray.600',
-      _dark: 'gray.300',
+      default: 'lightCyan.600',
+      _dark: 'lightCyan.300',
     },
     subtle: {
-      default: 'gray.500',
-      _dark: 'gray.400',
+      default: 'lightCyan.500',
+      _dark: 'lightCyan.400',
     },
     border: {
-      default: 'gray.200',
-      _dark: 'gray.700',
+      default: 'lightCyan.200',
+      _dark: 'lightCyan.700',
     },
     accent: {
-      default: 'brand.500',
-      _dark: 'brand.200',
+      default: 'mellowApricot.500',
+      _dark: 'mellowApricot.200',
     },
     success: {
       default: 'green.600',
@@ -52,11 +52,11 @@ export default {
       default: 'red.600',
       _dark: 'red.200',
     },
-    'bg-accent': 'brand.600',
-    'bg-accent-subtle': 'brand.500',
-    'bg-accent-muted': 'brand.400',
+    'bg-accent': 'mellowApricot.600',
+    'bg-accent-subtle': 'mellowApricot.500',
+    'bg-accent-muted': 'mellowApricot.400',
     'on-accent': 'white',
-    'on-accent-muted': 'brand.50',
-    'on-accent-subtle': 'brand.100',
+    'on-accent-muted': 'mellowApricot.50',
+    'on-accent-subtle': 'mellowApricot.100',
   },
 }

@@ -15,13 +15,13 @@ const variants = {
       bg: 'transparent',
     },
     filledTrack: {
-      bg: 'brand.50',
+      bg: 'mellowApricot.50',
     },
   },
 }
 
 const defaultProps = {
-  colorScheme: 'brand',
+  colorScheme: 'mellowApricot',
   variant: 'solid',
 }
 

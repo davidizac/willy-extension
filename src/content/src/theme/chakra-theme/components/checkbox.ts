@@ -6,7 +6,7 @@ const baseStyle = (props: StyleFunctionProps) => ({
     fontWeight: 'medium',
   },
   control: {
-    bg: mode('white', 'gray.800')(props),
+    bg: mode('white', 'lightCyan.800')(props),
     borderRadius: 'base',
   },
 })
@@ -20,7 +20,7 @@ const sizes = {
 }
 
 const defaultProps = {
-  colorScheme: 'brand',
+  colorScheme: 'mellowApricot',
 }
 
 export default {
