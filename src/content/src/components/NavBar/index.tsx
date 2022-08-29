@@ -21,6 +21,7 @@ import { useEffect } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { inspectingState } from '../../atoms/inspect.state'
 import { focusingState } from '../../atoms/focus.state'
+import { sideBarState } from '../../atoms/sidebar.state'
 
 interface NavItem {
   label: string
@@ -59,18 +60,35 @@ const FLOW_TYPES: Array<NavItem> = [
 ]
 
 export default function NavBar() {
-  const { isOpen, onToggle } = useDisclosure()
+  const { isOpen, onClose, onOpen, onToggle } = useDisclosure()
   const [, setIsInspect] = useRecoilState(inspectingState)
   const isFocusing = useRecoilValue(focusingState)
+  const isSideBarOpen = useRecoilValue(sideBarState)
+  const [, setSideBarOpen] = useRecoilState(sideBarState)
 
-  const handleClick = () => {
-    onToggle()
+  useEffect(() => {
+    onOpen()
+  }, [])
+
+  useEffect(() => {
+    if (isSideBarOpen) onClose()
+    else onOpen()
+  }, [isSideBarOpen])
+
+  useEffect(() => {
+    if (isFocusing) onClose()
+    else onOpen()
+  }, [isFocusing])
+
+  const handleInspectClick = () => {
+    setSideBarOpen(false)
+    onClose()
     setIsInspect(true)
   }
 
-  useEffect(() => {
-    onToggle()
-  }, [])
+  const handleSideBarClick = () => {
+    setSideBarOpen(!isSideBarOpen)
+  }
 
   const AddButton = () => {
     const linkColor = useColorModeValue('lightCyan.600', 'lightCyan.200')
@@ -108,7 +126,7 @@ export default function NavBar() {
   const DesktopSubNav = ({ label, description, id, icon }: NavItem) => {
     return (
       <Link
-        onClick={handleClick}
+        onClick={handleInspectClick}
         role={'group'}
         display={'block'}
         p={2}
@@ -141,6 +159,7 @@ export default function NavBar() {
       </Link>
     )
   }
+
   return (
     <Slide direction='bottom' in={isOpen} style={{ zIndex: 100000000000 }}>
       <Box bg={'white'} width={'100%'} height={'auto'} px={'20px'} py={'10px'}>
@@ -172,8 +191,9 @@ export default function NavBar() {
           )}
           <Spacer />
           <ButtonGroup gap='2'>
-            <Button variant='primary'>Sign Up</Button>
-            <Button variant='outline'>Log in</Button>
+            <Button variant='primary' onClick={handleSideBarClick}>
+              <Text fontSize='md'>{isSideBarOpen ? 'Close' : 'Open'}</Text>
+            </Button>
           </ButtonGroup>
         </Flex>
       </Box>

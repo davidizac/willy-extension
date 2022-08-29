@@ -10,7 +10,8 @@ import { Toolbar } from '../Toolbar'
 import { focusingState } from '../../atoms/focus.state'
 import { useRecoilState } from 'recoil'
 
-export default function EditableElement({ top, left, editorConfig }) {
+export default function EditableElement({ editorConfig, targetElement }) {
+  const { top, left } = editorConfig
   const elementRef = useRef(null)
   const plusIconRef = useRef(null)
   const editableIconRef = useRef(null)
@@ -19,10 +20,17 @@ export default function EditableElement({ top, left, editorConfig }) {
   const [editedElement, setEditedElement] = useState<HTMLElement | null>(null)
   const [, setIsFocus] = useRecoilState(focusingState)
 
-
-  // Hook called whenever there is a change to the size of the edited element.
+  // Hook called whenever there is a change to the size of the canvas.
   // We need to get this changing information to update the top position of the toolbar
-  const editedElementSize = useSize(elementRef)
+  const canvasSize = useSize(elementRef)
+
+  // useEffect(() => {
+  //  const targetElementDimension = targetElement.getClientRects()[0]
+  //  const editorElementDimension = elementRef.current.getClientRects()[0]
+  //  const topDiff = editorElementDimension.top - targetElementDimension.top
+  //  const bottomDiff = editorElementDimension.bottom - targetElementDimension.bottom
+  // }, [canvasSize])
+
   const [iconsProp, setIconsProp] = useState({
     display: 'none',
     edit: {
@@ -100,6 +108,7 @@ export default function EditableElement({ top, left, editorConfig }) {
     editor.select(editor.getWrapper())
     setEditedElement(null)
     setIconVisibility(true)
+    setIsFocus(false)
   }
 
   useEffect(() => {
@@ -134,6 +143,7 @@ export default function EditableElement({ top, left, editorConfig }) {
               style={{
                 top: iconsProp.edit.top,
                 left: iconsProp.edit.left,
+                animation: 'fade-in 0.5s ease-in-out',
                 display: iconsProp.display,
               }}
             >
@@ -148,6 +158,7 @@ export default function EditableElement({ top, left, editorConfig }) {
               style={{
                 top: iconsProp.plus.top,
                 left: iconsProp.plus.left,
+                animation: 'fade-in 0.5s ease-in-out',
                 display: iconsProp.display,
               }}
             >
@@ -161,7 +172,7 @@ export default function EditableElement({ top, left, editorConfig }) {
         <Toolbar
           editedElement={editedElement}
           handleSaveButtonClick={handleSaveButtonClick}
-          editedElementSize={editedElementSize}
+          canvasSize={canvasSize}
         />
       )}
     </div>

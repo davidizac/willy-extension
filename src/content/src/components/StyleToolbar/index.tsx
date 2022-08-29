@@ -162,13 +162,26 @@ export default function StyleToolbar() {
     // the element position (e.target) is relative to the viewport.
     // However, the tooltip is relative to his parent.
     // So we need to substract the parent position from the tooltip position.
-
+    e.stopPropagation()
     const parentPosition = ref.current.getClientRects()[0]
     const elementPosition = e.target.getClientRects()[0]
     setActiveItem(id)
     if (id == activeItem && showPopup) setShowPopup(false)
     else setShowPopup(true)
     setPopupPosition(elementPosition.left - parentPosition.left)
+  }
+
+  const handleMouseEvent = (e, id) => {
+    // the element position (e.target) is relative to the viewport.
+    // However, the tooltip is relative to his parent.
+    // So we need to substract the parent position from the tooltip position.
+    e.stopPropagation()
+    setShowTooltip(true)
+    if (hoveredItem === id) return
+    const parentPosition = ref.current.getClientRects()[0]
+    const elementPosition = e.target.getClientRects()[0]
+    setHoveredItem(id)
+    setToolTipPosition(elementPosition.left - parentPosition.left)
   }
 
   const TextItems = {
@@ -211,24 +224,13 @@ export default function StyleToolbar() {
           top: '-50px',
           padding: '10px 15px',
           borderRadius: '20px',
+          animation: 'fade-in 0.3s ease-in-out',
           background: '#ddd',
           color: '#3d4a52',
           boxShadow: '0px 1px 4px rgb(0 0 0 / 25%)',
         }}
       ></div>
     )
-  }
-
-  const handleMouseEvent = (e, id) => {
-    // the element position (e.target) is relative to the viewport.
-    // However, the tooltip is relative to his parent.
-    // So we need to substract the parent position from the tooltip position.
-
-    const parentPosition = ref.current.getClientRects()[0]
-    const elementPosition = e.target.getClientRects()[0]
-    setHoveredItem(id)
-    setShowTooltip(true)
-    setToolTipPosition(elementPosition.left - parentPosition.left)
   }
 
   const TextToolBar = () => {

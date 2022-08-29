@@ -10,7 +10,7 @@ const ToolBarContainer = styled.div`
   z-index: 2;
 `
 
-export function Toolbar({ editedElement, handleSaveButtonClick, editedElementSize }) {
+export function Toolbar({ editedElement, handleSaveButtonClick, canvasSize }) {
   const ref = useRef(null)
 
   const getToolbarPosition = () => {
@@ -24,7 +24,7 @@ export function Toolbar({ editedElement, handleSaveButtonClick, editedElementSiz
   const [toolbarPosition, setToolbarPosition] = useState(getToolbarPosition())
 
   useEffect(() => {
-    // the height of the edited element has changed so we are updating the top position of the toolbar.
+    // the height of the canvas element has changed so we are updating the top position of the toolbar.
     // Otherwise the top position of the toolbar will stay the same because of the usePositionCorrection hook.
 
     const { bottom } = editedElement?.getClientRects()[0]
@@ -34,7 +34,7 @@ export function Toolbar({ editedElement, handleSaveButtonClick, editedElementSiz
         top: bottom + 30,
       }
     })
-  }, [editedElementSize])
+  }, [canvasSize])
 
   const { top, left } = usePositionCorrection(ref, {
     leftPos: toolbarPosition.left,

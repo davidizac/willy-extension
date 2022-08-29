@@ -11,6 +11,7 @@ export default function EditorContainer() {
   })
 
   const [shouldDisplayElement, setShouldDisplayElement] = useState(false)
+  const [targetElement, setTargetElement] = useState()
 
   const handleClickEvent = (element: HTMLElement) => {
     setElementPosition({
@@ -18,6 +19,7 @@ export default function EditorContainer() {
       left: element.getClientRects()[0].left + 'px',
     })
     document.body.style.overflow = 'hidden'
+    setTargetElement(element)
     setShouldDisplayElement(true)
   }
 
@@ -32,6 +34,7 @@ export default function EditorContainer() {
 
   const editorConfig = {
     width: 250,
+    ...elementPosition,
   }
 
   return (
@@ -41,17 +44,11 @@ export default function EditorContainer() {
         zIndex: 99999999999,
         top: '0px',
         left: '0px',
-        width: '100%',
-        height: '100%',
         display: shouldDisplayElement ? 'block' : 'none',
       }}
     >
       {shouldDisplayElement && (
-        <EditableElement
-          editorConfig={editorConfig}
-          top={elementPosition.top}
-          left={elementPosition.left}
-        />
+        <EditableElement editorConfig={editorConfig} targetElement={targetElement} />
       )}
     </div>
   )
