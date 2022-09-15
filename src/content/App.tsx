@@ -6,10 +6,12 @@ import EditorContainer from './src/components/EditorContainer'
 import { GlobalCSSForEditor, GlobalCSSForChakra } from './src/theme/global'
 import ManagerContainer from './src/components/ManagerContainer'
 import { RecoilRoot } from 'recoil'
+import RecoilNexus from 'recoil-nexus'
 
 export default function App() {
   return (
     <RecoilRoot>
+      <RecoilNexus />
       <ManagerRoot.div>
         <ChakraProvider theme={theme}>
           <GlobalCSSForChakra />

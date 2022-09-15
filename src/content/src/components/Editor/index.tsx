@@ -2,6 +2,8 @@
 /* eslint-disable camelcase */
 import grapesjsCss from '!raw-loader!grapesjs/dist/css/grapes.min.css'
 import customStyle from '!raw-loader!./style.css'
+import grapesjsRteCss from '!raw-loader!grapesjs-rte-extensions/dist/grapesjs-rte-extensions.min.css'
+
 import { useEffect, useRef, useState } from 'react'
 import { initEditor } from '../../utils/editor'
 import { EditableIcon, PlusIcon } from '../../icons'
@@ -9,6 +11,11 @@ import { useSize } from '../../hooks'
 import { Toolbar } from '../Toolbar'
 import { focusingState } from '../../atoms/focus.state'
 import { useRecoilState } from 'recoil'
+import { getRecoil, setRecoil } from 'recoil-nexus'
+import { selectionState } from '../../atoms/selection.state'
+import getIframe from '../../utils/get-iframe'
+import { editorState } from '../../atoms/editor.state'
+import { selectedElementState } from '../../atoms/selected-element.state'
 
 export default function EditableElement({ editorConfig, targetElement }) {
   const { top, left } = editorConfig
@@ -16,20 +23,13 @@ export default function EditableElement({ editorConfig, targetElement }) {
   const plusIconRef = useRef(null)
   const editableIconRef = useRef(null)
   const [editor, setEditor] = useState()
+
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null)
   const [editedElement, setEditedElement] = useState<HTMLElement | null>(null)
   const [, setIsFocus] = useRecoilState(focusingState)
-
   // Hook called whenever there is a change to the size of the canvas.
   // We need to get this changing information to update the top position of the toolbar
   const canvasSize = useSize(elementRef)
-
-  // useEffect(() => {
-  //  const targetElementDimension = targetElement.getClientRects()[0]
-  //  const editorElementDimension = elementRef.current.getClientRects()[0]
-  //  const topDiff = editorElementDimension.top - targetElementDimension.top
-  //  const bottomDiff = editorElementDimension.bottom - targetElementDimension.bottom
-  // }, [canvasSize])
 
   const [iconsProp, setIconsProp] = useState({
     display: 'none',
@@ -76,6 +76,17 @@ export default function EditableElement({ editorConfig, targetElement }) {
     }
   }
 
+  // update toobar state
+  const handleMouseUp = (el) => {
+    const iframe = getIframe()
+
+    const selection = iframe.contentWindow.getSelection()
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0)
+      setRecoil(selectionState, range)
+    }
+  }
+
   const setIconVisibility = (isVisible) => {
     setIconsProp((iconsProp) => {
       const display = isVisible ? 'inline-block' : 'none'
@@ -86,7 +97,7 @@ export default function EditableElement({ editorConfig, targetElement }) {
     })
   }
 
-  const handleEditableIconClick = () => {
+  const handleEditableIconClick = async () => {
     hoveredElement.contentEditable = 'true'
     hoveredElement.focus()
     editor.select(hoveredElement)
@@ -98,6 +109,7 @@ export default function EditableElement({ editorConfig, targetElement }) {
     setHoveredElement(null)
     const editedElement = hoveredElement
     setEditedElement(editedElement)
+    setRecoil(selectedElementState, editedElement)
     setIsFocus(true)
   }
 
@@ -117,9 +129,12 @@ export default function EditableElement({ editorConfig, targetElement }) {
       container: elementRef.current,
       handleMouseOut,
       handleMouseOver,
+      handleMouseUp,
     })
     setEditor(editor)
+    setRecoil(editorState, editor)
   }, [elementRef])
+
   return (
     <div
       id='willy'
@@ -130,6 +145,7 @@ export default function EditableElement({ editorConfig, targetElement }) {
       }}
     >
       <style type='text/css'>{grapesjsCss}</style>
+      <style type='text/css'>{grapesjsRteCss}</style>
       <style type='text/css'>{customStyle}</style>
       <div className='editor-row'>
         <div className='editor-canvas'>

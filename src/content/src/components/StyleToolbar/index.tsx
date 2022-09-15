@@ -1,11 +1,13 @@
 import styled from 'styled-components'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
+  AlignIcon1,
   BackgrondIcon,
   EmojiIcon,
   FontColorIcon,
   JustifyContentIcon,
+  ListIcon1,
   SectionPaddingIcon,
   TextBoldIcon,
   TextItalicIcon,
@@ -30,6 +32,15 @@ import {
 } from '../../popups/toolbar.popups'
 import { useOnClickOutside } from '../../hooks'
 import { PopupWrapper } from '../PopupWrapper'
+import { publish } from '../../utils/events'
+import { useRecoilValue } from 'recoil'
+import { getRecoil, setRecoil } from 'recoil-nexus'
+import { selectionState } from '../../atoms/selection.state'
+import getIframe from '../../utils/get-iframe'
+import { editorState } from '../../atoms/editor.state'
+import { selectedElementState } from '../../atoms/selected-element.state'
+import StyleManager from '../../utils/style-manager'
+import { swap } from '../../utils'
 
 const ToolBar = styled.div`
   background: #ffffff;
@@ -143,6 +154,22 @@ const FontSizeInput = styled.input`
   font-family: inherit;
 `
 
+const defaultToolbarValues = {
+  TEXT_TYPE: 'Normal',
+  TYPOGRAPHY: {
+    CASE: 'Mixed',
+    LINE_HEIGHT: 19,
+    LETTER_SPACE: 5,
+  },
+  FONT_SIZE: 14,
+  COLOR: 'red',
+  BOLD: false,
+  ITALIC: false,
+  UNDERLINE: false,
+  ALIGN: <AlignIcon1 />,
+  LIST: <ListIcon1 />,
+}
+
 export default function StyleToolbar() {
   const ref = useRef(null)
 
@@ -150,26 +177,59 @@ export default function StyleToolbar() {
   const [hoveredItem, setHoveredItem] = useState()
   const [tooltipPosition, setToolTipPosition] = useState()
   const [showToolTip, setShowTooltip] = useState(false)
+  const [toolbarValues, setToolbarValues] = useState(defaultToolbarValues)
 
   // on click display popup
-  const [activeItem, setActiveItem] = useState()
+  const [currentItem, setCurrentItem] = useState()
+
   const [popupPosition, setPopupPosition] = useState()
   const [showPopup, setShowPopup] = useState(false)
+  const range = useRecoilValue(selectionState)
+  const editor = useRecoilValue(editorState)
 
+  const selectedElement = useRecoilValue(selectedElementState)
+
+  const styleManager = new StyleManager({ editor, selectedElement })
   useOnClickOutside(ref, () => setShowPopup(false))
 
-  const handleClick = (e, id) => {
-    // the element position (e.target) is relative to the viewport.
-    // However, the tooltip is relative to his parent.
-    // So we need to substract the parent position from the tooltip position.
-    e.stopPropagation()
-    const parentPosition = ref.current.getClientRects()[0]
-    const elementPosition = e.target.getClientRects()[0]
-    setActiveItem(id)
-    if (id == activeItem && showPopup) setShowPopup(false)
-    else setShowPopup(true)
-    setPopupPosition(elementPosition.left - parentPosition.left)
-  }
+  // keep edited element editable even when focus is out
+  useEffect(() => {
+    selectedElement!.contentEditable = 'true'
+    editor.select(selectedElement)
+  })
+
+  // // when selection changes, update the inline toolbar values
+  useEffect(() => {
+    if (!range) return
+    styleManager.updateRange(range)
+    console.log('range changed')
+    const styles = styleManager.getAllInlineStyle() || defaultToolbarValues
+    setToolbarValues({
+      ...defaultToolbarValues,
+      ...styles,
+    })
+  }, [range])
+
+  const handleClick = useCallback(
+    (e, id) => {
+      // the element position (e.target) is relative to the viewport.
+      // However, the tooltip is relative to his parent.
+      // So we need to substract the parent position from the tooltip position.
+
+      e.stopPropagation()
+      const parentPosition = ref.current.getClientRects()[0]
+      const elementPosition = e.target.getClientRects()[0]
+      setCurrentItem(id)
+      if (id == currentItem && showPopup) setShowPopup(false)
+      else setShowPopup(true)
+      setPopupPosition(elementPosition.left - parentPosition.left)
+      // focus only if no element are selected
+      if (getIframe().contentWindow?.document.getSelection()?.getRangeAt(0).collapsed) {
+        selectedElement?.focus()
+      }
+    },
+    [range],
+  )
 
   const handleMouseEvent = (e, id) => {
     // the element position (e.target) is relative to the viewport.
@@ -205,7 +265,7 @@ export default function StyleToolbar() {
   }
 
   const Tooltip = ({ text, left }) => {
-    const ref = useRef(null)
+    const ref = useRef<HTMLElement | null>(null)
     const [width, setWidth] = useState(0)
     useEffect(() => {
       if (!ref || !ref.current) return
@@ -233,13 +293,27 @@ export default function StyleToolbar() {
     )
   }
 
+  const setInlineStyle = useCallback(
+    (id) => {
+      const key = swap(TextItems)[id]
+      setToolbarValues((toolbarValues) => {
+        styleManager.setInlineStyle(key, !toolbarValues[key])
+        return {
+          ...toolbarValues,
+          [key]: !toolbarValues[key],
+        }
+      })
+    },
+    [range],
+  )
+
   const TextToolBar = () => {
     const onFontSizeChange = (e) => {}
     return (
       <NotLastToolBarSection sectionLabel={'Text'}>
         <ToolBarItem
           id={TextItems.TEXT_TYPE}
-          active={activeItem == TextItems.TEXT_TYPE}
+          active={currentItem == TextItems.TEXT_TYPE}
           onClick={(e) => {
             handleClick(e, TextItems.TEXT_TYPE)
           }}
@@ -247,12 +321,12 @@ export default function StyleToolbar() {
           onMouseOver={(e) => handleMouseEvent(e, TextItems.TEXT_TYPE)}
           onMouseOut={(e) => setShowTooltip(false)}
         >
-          Normal
+          {toolbarValues.TEXT_TYPE}
           <DropDownIcon />
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.TYPOGRAPHY}
-          active={activeItem == TextItems.TYPOGRAPHY}
+          active={currentItem == TextItems.TYPOGRAPHY}
           onClick={(e) => {
             handleClick(e, TextItems.TYPOGRAPHY)
           }}
@@ -263,36 +337,40 @@ export default function StyleToolbar() {
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.FONT_SIZE}
-          active={activeItem == TextItems.FONT_SIZE}
+          active={currentItem == TextItems.FONT_SIZE}
           onClick={(e) => {
             handleClick(e, TextItems.FONT_SIZE)
           }}
           onMouseOver={(e) => handleMouseEvent(e, TextItems.FONT_SIZE)}
           onMouseOut={(e) => setShowTooltip(false)}
         >
-          <FontSizeInner active={activeItem == TextItems.FONT_SIZE}>
+          <FontSizeInner active={currentItem == TextItems.FONT_SIZE}>
             <FontSize>
-              <FontSizeInput value={14} onChange={onFontSizeChange}></FontSizeInput>
+              <FontSizeInput
+                value={toolbarValues.FONT_SIZE}
+                onChange={onFontSizeChange}
+              ></FontSizeInput>
             </FontSize>
             <DropDownIcon />
           </FontSizeInner>
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.FONT_COLOR}
-          active={activeItem == TextItems.FONT_COLOR}
+          active={currentItem == TextItems.FONT_COLOR}
           onClick={(e) => {
             handleClick(e, TextItems.FONT_COLOR)
           }}
           onMouseOver={(e) => handleMouseEvent(e, TextItems.FONT_COLOR)}
           onMouseOut={(e) => setShowTooltip(false)}
         >
-          <FontColorIcon />
+          <FontColorIcon fontColor={toolbarValues.COLOR} />
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.BOLD}
-          active={activeItem == TextItems.BOLD}
+          active={toolbarValues.BOLD}
           onClick={(e) => {
             handleClick(e, TextItems.BOLD)
+            setInlineStyle(TextItems.BOLD)
           }}
           onMouseOver={(e) => handleMouseEvent(e, TextItems.BOLD)}
           onMouseOut={(e) => setShowTooltip(false)}
@@ -301,9 +379,10 @@ export default function StyleToolbar() {
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.ITALIC}
-          active={activeItem == TextItems.ITALIC}
+          active={toolbarValues.ITALIC}
           onClick={(e) => {
             handleClick(e, TextItems.ITALIC)
+            setInlineStyle(TextItems.ITALIC)
           }}
           onMouseOver={(e) => handleMouseEvent(e, TextItems.ITALIC)}
           onMouseOut={(e) => setShowTooltip(false)}
@@ -312,9 +391,10 @@ export default function StyleToolbar() {
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.UNDERLINE}
-          active={activeItem == TextItems.UNDERLINE}
+          active={toolbarValues.UNDERLINE}
           onClick={(e) => {
             handleClick(e, TextItems.UNDERLINE)
+            setInlineStyle(TextItems.UNDERLINE)
           }}
           onMouseOver={(e) => handleMouseEvent(e, TextItems.UNDERLINE)}
           onMouseOut={(e) => setShowTooltip(false)}
@@ -323,29 +403,29 @@ export default function StyleToolbar() {
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.ALIGN}
-          active={activeItem == TextItems.ALIGN}
+          active={currentItem == TextItems.ALIGN}
           onClick={(e) => {
             handleClick(e, TextItems.ALIGN)
           }}
           onMouseOver={(e) => handleMouseEvent(e, TextItems.ALIGN)}
           onMouseOut={(e) => setShowTooltip(false)}
         >
-          <JustifyContentIcon />
+          {toolbarValues.ALIGN}
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.LIST}
-          active={activeItem == TextItems.LIST}
+          active={currentItem == TextItems.LIST}
           onClick={(e) => {
             handleClick(e, TextItems.LIST)
           }}
           onMouseOver={(e) => handleMouseEvent(e, TextItems.LIST)}
           onMouseOut={(e) => setShowTooltip(false)}
         >
-          <TextListIcon />
+          {toolbarValues.LIST}
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.EMOJI}
-          active={activeItem == TextItems.EMOJI}
+          active={currentItem == TextItems.EMOJI}
           onClick={(e) => {
             handleClick(e, TextItems.EMOJI)
           }}
@@ -356,7 +436,7 @@ export default function StyleToolbar() {
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.PERSO}
-          active={activeItem == TextItems.PERSO}
+          active={currentItem == TextItems.PERSO}
           onClick={(e) => {
             handleClick(e, TextItems.PERSO)
           }}
@@ -367,7 +447,7 @@ export default function StyleToolbar() {
         </ToolBarItem>
         <ToolBarItem
           id={TextItems.LINK}
-          active={activeItem == TextItems.LINK}
+          active={currentItem == TextItems.LINK}
           onClick={(e) => {
             handleClick(e, TextItems.LINK)
           }}
@@ -385,7 +465,7 @@ export default function StyleToolbar() {
       <ToolbarSection sectionLabel={'Section'} customTop={'-12px'}>
         <ToolBarItem
           id={SectionItems.SPACING}
-          active={activeItem == SectionItems.SPACING}
+          active={currentItem == SectionItems.SPACING}
           onClick={(e) => handleClick(e, SectionItems.SPACING)}
           onMouseOver={(e) => handleMouseEvent(e, SectionItems.SPACING)}
           onMouseOut={(e) => setShowTooltip(false)}
@@ -394,7 +474,7 @@ export default function StyleToolbar() {
         </ToolBarItem>
         <ToolBarItem
           id={SectionItems.BACKGROUND}
-          active={activeItem == SectionItems.BACKGROUND}
+          active={currentItem == SectionItems.BACKGROUND}
           onClick={(e) => handleClick(e, SectionItems.BACKGROUND)}
           onMouseOver={(e) => handleMouseEvent(e, SectionItems.BACKGROUND)}
           onMouseOut={(e) => setShowTooltip(false)}
@@ -413,57 +493,57 @@ export default function StyleToolbar() {
         <TextToolBar />
         <SectionToolBar />
       </ToolBar>
-      {showPopup && activeItem == TextItems.TEXT_TYPE && (
+      {showPopup && currentItem == TextItems.TEXT_TYPE && (
         <PopupWrapper left={popupPosition - 100}>
           <HeadingPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.FONT_SIZE && (
+      {showPopup && currentItem == TextItems.FONT_SIZE && (
         <PopupWrapper left={popupPosition}>
           <FontSizePopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.TYPOGRAPHY && (
+      {showPopup && currentItem == TextItems.TYPOGRAPHY && (
         <PopupWrapper left={popupPosition - 123}>
-          <TypographyPopup />
+          <TypographyPopup typographyValues={toolbarValues.TYPOGRAPHY} />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.FONT_COLOR && (
+      {showPopup && currentItem == TextItems.FONT_COLOR && (
         <PopupWrapper left={popupPosition - 123}>
           <PaletteColorPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.ALIGN && (
+      {showPopup && currentItem == TextItems.ALIGN && (
         <PopupWrapper left={popupPosition - 19}>
           <AlignPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.LIST && (
+      {showPopup && currentItem == TextItems.LIST && (
         <PopupWrapper left={popupPosition - 19}>
           <ListPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.EMOJI && (
+      {showPopup && currentItem == TextItems.EMOJI && (
         <PopupWrapper left={popupPosition - 120}>
           <EmojiPickerPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.PERSO && (
+      {showPopup && currentItem == TextItems.PERSO && (
         <PopupWrapper left={popupPosition - 100}>
           <PersonalizationPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == TextItems.LINK && (
+      {showPopup && currentItem == TextItems.LINK && (
         <PopupWrapper left={popupPosition - 145}>
           <AddLinkPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == SectionItems.SPACING && (
+      {showPopup && currentItem == SectionItems.SPACING && (
         <PopupWrapper left={popupPosition - 110}>
           <SpacingPopup />
         </PopupWrapper>
       )}
-      {showPopup && activeItem == SectionItems.BACKGROUND && (
+      {showPopup && currentItem == SectionItems.BACKGROUND && (
         <PopupWrapper left={popupPosition - 160}>
           <BackgroundPopup />
         </PopupWrapper>

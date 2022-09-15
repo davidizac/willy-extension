@@ -119,7 +119,7 @@ export const TypographyIcon = () => {
   )
 }
 
-export const FontColorIcon = () => {
+export const FontColorIcon = ({ fontColor }) => {
   return (
     <svg
       viewBox='0 0 17 21'
@@ -134,7 +134,7 @@ export const FontColorIcon = () => {
         fill='#3D4A52'
       ></path>
       <rect x='0.782806' y='13.123' width='16.1312' height='7.05741' rx='1' fill='#DDE2E5'></rect>
-      <rect x='2.79919' y='15.1394' width='12.0984' height='3.0246' rx='1' fill='inherit'></rect>
+      <rect x='2.79919' y='15.1394' width='12.0984' height='3.0246' rx='1' fill={fontColor}></rect>
     </svg>
   )
 }

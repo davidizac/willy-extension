@@ -108,14 +108,33 @@ const SelectDiv = styled(ValueContainer)`
   &:after {
     content: '';
     background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M1.41%200L6%204.58L10.59%200L12%201.41L6%207.41L0%201.41L1.41%200Z%22%20fill%3D%22%23C2CBD0%22/%3E%0A%3C/svg%3E);
-    width: 12px;
+    width: 17px;
     height: 8px;
+  }
+`
+const SelectDiv2 = styled(SelectDiv)`
+  &:after {
+    width: 12px;
   }
 `
 const Key = styled.div`
   margin-bottom: 10px;
 `
-
+const ColorOnHover = styled.div<{ active: boolean }>`
+  cursor: ${(props) => (props.active ? 'inherit' : 'pointer')}!important;
+  opacity: ${(props) => (props.active ? 1 : 0.7)};
+  & svg * {
+    fill: ${(props) => (props.active ? 'black' : 'inherit')}!important;
+  }
+  &:hover {
+    & svg * {
+      fill: ${(props) => (props.active ? 'black' : '#dd5584')}!important;
+    }
+    background-color: ${(props) => (!props.active ? 'rgba(221, 85, 132, 0.1)' : 'white')};
+    color: ${(props) => (props.active ? 'black' : '#dd5584')}!important;
+    opacity: 1;
+  }
+`
 const PopupToolbarContainer = styled.div<{
   backgroundOnHover: boolean
   overflowY: boolean
@@ -218,10 +237,17 @@ const TextValue = styled.div`
   text-overflow: ellipsis;
 `
 const WillyPopupV2 = styled(WillyPopup)`
-  padding: 15px 13px;
+  padding: 15px 0px;
   display: flex;
   flex-direction: column;
   row-gap: 13px;
+  width: 100px;
+  & div {
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `
 
 const IconWrapper = styled.div`
@@ -352,24 +378,31 @@ const ImageInput = styled(Input)`
 `
 
 export const HeadingPopup = () => {
+  const handleClick = (e) => {
+    handleStyleChanged(e.target.value)
+  }
   return (
     <WillyPopup>
       <PopupTitle>Text Type</PopupTitle>
 
       <PopupToolbarContainer colorOnHover={true}>
-        <RawOption value='normal' className='raw-option hoverable-select selected'>
+        <RawOption
+          onClick={handleClick}
+          value='normal'
+          className='raw-option hoverable-select selected'
+        >
           <div style={{ fontSize: '17px', fontWeight: 'normal' }}>Normal</div>
         </RawOption>
 
-        <RawOption value='h1' className='raw-option hoverable-select'>
+        <RawOption onClick={handleClick} value='h1' className='raw-option hoverable-select'>
           <h1 style={{ fontSize: '35px', fontWeight: 'bold' }}>Header 1</h1>
         </RawOption>
 
-        <RawOption value='h2' className='raw-option hoverable-select'>
+        <RawOption onClick={handleClick} value='h2' className='raw-option hoverable-select'>
           <h2 style={{ fontSize: '25px', fontWeight: 'bold' }}>Header 2</h2>
         </RawOption>
 
-        <RawOption value='h3' className='raw-option hoverable-select'>
+        <RawOption onClick={handleClick} value='h3' className='raw-option hoverable-select'>
           <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Header 3</h3>
         </RawOption>
       </PopupToolbarContainer>
@@ -378,48 +411,133 @@ export const HeadingPopup = () => {
 }
 
 export const FontSizePopup = () => {
+  const [active, setActive] = useState(12)
+  const handleClick = (e) => {
+    setActive(e.target.innerText)
+    handleStyleChanged(e.target.innerText)
+  }
   return (
     <WillyPopup>
       <PopupToolbarContainer backgroundOnHover={true} colorOnHover={true} overflowY={true}>
-        <div>8</div>
-        <div>9</div>
-        <div>10</div>
-        <div>11</div>
-        <div>12</div>
-        <div>14</div>
-        <div>16</div>
-        <div>18</div>
-        <div>22</div>
-        <div>26</div>
-        <div>30</div>
-        <div>34</div>
-        <div>40</div>
-        <div>46</div>
-        <div>52</div>
-        <div>60</div>
-        <div>70</div>
-        <div>80</div>
-        <div>90</div>
+        <ColorOnHover active={active == 8} onClick={handleClick}>
+          8
+        </ColorOnHover>
+        <ColorOnHover active={active == 9} onClick={handleClick}>
+          9
+        </ColorOnHover>
+        <ColorOnHover active={active == 10} onClick={handleClick}>
+          10
+        </ColorOnHover>
+        <ColorOnHover active={active == 11} onClick={handleClick}>
+          11
+        </ColorOnHover>
+        <ColorOnHover active={active == 12} onClick={handleClick}>
+          12
+        </ColorOnHover>
+        <ColorOnHover active={active == 14} onClick={handleClick}>
+          14
+        </ColorOnHover>
+        <ColorOnHover active={active == 16} onClick={handleClick}>
+          16
+        </ColorOnHover>
+        <ColorOnHover active={active == 18} onClick={handleClick}>
+          18
+        </ColorOnHover>
+        <ColorOnHover active={active == 22} onClick={handleClick}>
+          22
+        </ColorOnHover>
+        <ColorOnHover active={active == 26} onClick={handleClick}>
+          26
+        </ColorOnHover>
+        <ColorOnHover active={active == 30} onClick={handleClick}>
+          30
+        </ColorOnHover>
+        <ColorOnHover active={active == 34} onClick={handleClick}>
+          34
+        </ColorOnHover>
+        <ColorOnHover active={active == 40} onClick={handleClick}>
+          40
+        </ColorOnHover>
+        <ColorOnHover active={active == 46} onClick={handleClick}>
+          46
+        </ColorOnHover>
+        <ColorOnHover active={active == 52} onClick={handleClick}>
+          52
+        </ColorOnHover>
+        <ColorOnHover active={active == 60} onClick={handleClick}>
+          60
+        </ColorOnHover>
+        <ColorOnHover active={active == 70} onClick={handleClick}>
+          70
+        </ColorOnHover>
+        <ColorOnHover active={active == 80} onClick={handleClick}>
+          80
+        </ColorOnHover>
+        <ColorOnHover active={active == 90} onClick={handleClick}>
+          90
+        </ColorOnHover>
       </PopupToolbarContainer>
     </WillyPopup>
   )
 }
 
-export const TypographyPopup = () => {
-  const [showInnerPopup, toggleInnerPopup] = useToggle(false, true)
+export const TypographyPopup = ({ typographyValues }) => {
+  const [showInnerPopup, setShowPopup] = useState(false)
+  const [activeCase, setActiveCase] = useState(typographyValues.CASE)
+
+  const [value, setValue] = useState({
+    case: activeCase,
+    lineheight: typographyValues.LINE_HEIGHT,
+    letterspace: typographyValues.LETTER_SPACE,
+  })
+
+  const handleLetterSpaceChange = (e) => {
+    setValue((value) => {
+      return {
+        ...value,
+        letterspace: e,
+      }
+    })
+  }
+
+  const handleLineHeightChange = (e) => {
+    setValue((value) => {
+      return {
+        ...value,
+        lineheight: e,
+      }
+    })
+  }
+
+  const handleCaseChange = (e) => {
+    setActiveCase(e.target.innerText)
+    setValue((value) => {
+      return {
+        ...value,
+        case: e.target.innerText,
+      }
+    })
+    setShowPopup(false)
+  }
 
   const InnerPopup = () => {
     return (
       <WillyPopupV2>
-        <div onClick={toggleInnerPopup}>Mixed</div>
-        <div onClick={toggleInnerPopup}>Lowercase</div>
-        <div onClick={toggleInnerPopup}>Uppercase</div>
+        <ColorOnHover active={activeCase === 'Mixed'} onClick={handleCaseChange}>
+          Mixed
+        </ColorOnHover>
+        <ColorOnHover active={activeCase === 'Lowercase'} onClick={handleCaseChange}>
+          Lowercase
+        </ColorOnHover>
+        <ColorOnHover active={activeCase === 'Uppercase'} onClick={handleCaseChange}>
+          Uppercase
+        </ColorOnHover>
       </WillyPopupV2>
     )
   }
 
   return (
-    <WillyPopup>
+    <WillyPopup style={{ width: '230px' }}>
       <style>{SliderCss}</style>
       <style>{CustomCss}</style>
       <PopupTitle>Typography</PopupTitle>
@@ -432,34 +550,48 @@ export const TypographyPopup = () => {
                 <InnerPopup />
               </div>
             )}
-            <SelectDiv onClick={toggleInnerPopup}>
-              <TextValue>Mixed</TextValue>
-            </SelectDiv>
+            <div onClick={() => setShowPopup((showPopup) => !showPopup)}>
+              <SelectDiv style={{ zIndex: '-1' }}>
+                <TextValue>{value.case}</TextValue>
+              </SelectDiv>
+            </div>
           </FlexSpaceBetween>
         </MainOption>
         <MainOption>
           <FlexSpaceBetween>
             <div>Line Height</div>
-            <ValueContainer style={{ padding: '3px 12px 3px 0px' }}>
+            <ValueContainer style={{ padding: '3px 12px 3px 0px', width: '75px' }}>
               <IconWrapper>
                 <LineHeightIcon />
               </IconWrapper>
-              <TextValue>19</TextValue>
+              <TextValue>{value.lineheight}</TextValue>
             </ValueContainer>
           </FlexSpaceBetween>
-          <Slider />
+          <Slider
+            step={1}
+            min={1}
+            max={50}
+            value={value.lineheight}
+            onChange={handleLineHeightChange}
+          />
         </MainOption>
         <MainOption>
           <FlexSpaceBetween>
             <div>Letter Space</div>
-            <ValueContainer style={{ padding: '3px 12px 3px 0px' }}>
+            <ValueContainer style={{ padding: '3px 12px 3px 0px', width: '75px' }}>
               <IconWrapper>
                 <LetterSpaceIcon />
               </IconWrapper>
-              <TextValue>19</TextValue>
+              <TextValue>{value.letterspace}</TextValue>
             </ValueContainer>
           </FlexSpaceBetween>
-          <Slider />
+          <Slider
+            step={1}
+            min={1}
+            max={10}
+            value={value.letterspace}
+            onChange={handleLetterSpaceChange}
+          />
         </MainOption>
       </PopupToolbarContainer>
     </WillyPopup>
@@ -467,50 +599,61 @@ export const TypographyPopup = () => {
 }
 
 export const PaletteColorPopup = () => {
+  const handlePaletteColorChange = (e) => {
+    console.log(e)
+  }
   return (
     <WillyPopup borderRadius={'10px'}>
-      <PaletteColor width={247} />
+      <PaletteColor width={247} handlePaletteColorChange={handlePaletteColorChange} />
     </WillyPopup>
   )
 }
 
 export const AlignPopup = () => {
+  const [active, setActive] = useState('left')
+  const handleClick = (value) => {
+    setActive(value)
+  }
   return (
     <WillyPopup>
       <PopupToolbarContainer
         colorOnHover={true}
         style={{ display: 'flex', flexDirection: 'column', rowGap: '10px' }}
       >
-        <div>
+        <ColorOnHover active={active == 'left'} onClick={() => handleClick('left')}>
           <AlignIcon1 />
-        </div>
-        <div>
+        </ColorOnHover>
+        <ColorOnHover active={active == 'right'} onClick={() => handleClick('right')}>
           <AlignIcon2 />
-        </div>
-        <div>
+        </ColorOnHover>
+        <ColorOnHover active={active == 'center'} onClick={() => handleClick('center')}>
           <AlignIcon3 />
-        </div>
-        <div>
+        </ColorOnHover>
+        <ColorOnHover active={active == 'justify'} onClick={() => handleClick('justify')}>
           <AlignIcon4 />
-        </div>
+        </ColorOnHover>
       </PopupToolbarContainer>
     </WillyPopup>
   )
 }
 
 export const ListPopup = () => {
+  const [active, setActive] = useState('disc')
+  const handleClick = (value) => {
+    setActive(value)
+  }
   return (
     <WillyPopup>
       <PopupToolbarContainer
         colorOnHover={true}
         style={{ display: 'flex', flexDirection: 'column', rowGap: '10px' }}
       >
-        <div>
+        <ColorOnHover onClick={() => handleClick('disc')} active={active == 'disc'}>
           <ListIcon1 />
-        </div>
-        <div>
+        </ColorOnHover>
+        <ColorOnHover onClick={() => handleClick('numbers')} active={active == 'numbers'}>
           <ListIcon2 />
-        </div>
+        </ColorOnHover>
       </PopupToolbarContainer>
     </WillyPopup>
   )
@@ -539,11 +682,11 @@ export const PersonalizationPopup = () => {
       <PopupToolbarContainer style={{ display: 'flex', flexDirection: 'column', rowGap: '10px' }}>
         <MainOption>
           <Key>USER PROPERTIES</Key>
-          <SelectDiv style={{ columnGap: '9px' }}>Choose an attribute</SelectDiv>
+          <SelectDiv2 style={{ columnGap: '9px' }}>Choose an attribute</SelectDiv2>
         </MainOption>
         <MainOption>
           <Key>COMPANY PROPERTIES</Key>
-          <SelectDiv style={{ columnGap: '9px' }}>Choose an attribute</SelectDiv>
+          <SelectDiv2 style={{ columnGap: '9px' }}>Choose an attribute</SelectDiv2>
         </MainOption>
       </PopupToolbarContainer>
     </WillyPopup>
@@ -574,6 +717,21 @@ export const AddLinkPopup = () => {
 }
 
 export const SpacingPopup = () => {
+  const [value, setValue] = useState({
+    top: 19,
+    bottom: 19,
+    right: 19,
+    left: 19,
+  })
+
+  const handleChange = (e) => {
+    setValue((value) => {
+      return {
+        ...value,
+        [e.target.getAttribute('direction')]: e.target.value,
+      }
+    })
+  }
   return (
     <WillyPopup>
       <PopupTitle>Spacing</PopupTitle>
@@ -581,19 +739,47 @@ export const SpacingPopup = () => {
         <MainOption marginBottom={'0px'}>
           <DirectionInput className='direction-inputs' id='section-padding'>
             <InputWrapper>
-              <SpacingInput value={19} type='number' max={100} min={0} direction='top' />
+              <SpacingInput
+                onChange={handleChange}
+                value={value.top}
+                type='number'
+                max={100}
+                min={0}
+                direction='top'
+              />
               <InputLabel>Top</InputLabel>
             </InputWrapper>
             <InputWrapper>
-              <SpacingInput value={19} type='number' max={100} min={0} direction='right' />
+              <SpacingInput
+                onChange={handleChange}
+                value={value.right}
+                type='number'
+                max={100}
+                min={0}
+                direction='right'
+              />
               <InputLabel>Right</InputLabel>
             </InputWrapper>
             <InputWrapper>
-              <SpacingInput value={19} type='number' max={100} min={0} direction='bottom' />
+              <SpacingInput
+                onChange={handleChange}
+                value={value.bottom}
+                type='number'
+                max={100}
+                min={0}
+                direction='bottom'
+              />
               <InputLabel>Bottom</InputLabel>
             </InputWrapper>
             <InputWrapper>
-              <SpacingInput value={19} type='number' max={100} min={0} direction='left' />
+              <SpacingInput
+                onChange={handleChange}
+                value={value.left}
+                type='number'
+                max={100}
+                min={0}
+                direction='left'
+              />
               <InputLabel>Left</InputLabel>
             </InputWrapper>
             <Unify>

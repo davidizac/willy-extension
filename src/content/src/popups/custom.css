@@ -9,10 +9,12 @@
   height: 128px!important;
 } */
 
-.rcp-fields{
-  display: none!important;
+
+.rcp-fields-element * {
+  color: white!important;
 }
-.emoji-img{
+
+.emoji-img{ 
   width: 23px;
 }
 .emoji button{

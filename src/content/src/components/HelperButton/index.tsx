@@ -1,20 +1,17 @@
 import { Box, Text } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { focusingState } from '../../atoms/focus.state'
 
 export default function HelperButton() {
-  const [showButton, setShowButton] = useState(false)
   const isFocusing = useRecoilValue(focusingState)
+  const [, setIsFocusing] = useRecoilState(focusingState)
 
-  useEffect(() => {
-    if (isFocusing) setShowButton(true)
-    else setShowButton(false)
-  }, [isFocusing])
-
+  const handleClick = () => {
+    setIsFocusing(false)
+  }
   return (
     <>
-      {showButton && (
+      {isFocusing && (
         <Box
           pos={'absolute'}
           margin='auto'
@@ -28,6 +25,8 @@ export default function HelperButton() {
           px={'20px'}
           borderRadius='20px'
           bg={'white'}
+          onClick={handleClick}
+          cursor={'pointer'}
         >
           <Text>Back to navigation</Text>
         </Box>

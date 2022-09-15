@@ -1,4 +1,5 @@
 import grapesjs from 'grapesjs'
+import getIframe from './get-iframe'
 
 const resizeIframe = (iframe, editor) => {
   const elementRef = editor.getWrapper().getEl()
@@ -6,7 +7,13 @@ const resizeIframe = (iframe, editor) => {
   iframe.style.width = elementRef.offsetWidth + 1 + 'px'
 }
 
-export function initEditor({ editorConfig, container, handleMouseOver, handleMouseOut }) {
+export function initEditor({
+  editorConfig,
+  container,
+  handleMouseOver,
+  handleMouseOut,
+  handleMouseUp,
+}) {
   const { width } = editorConfig
 
   const editor = grapesjs.init({
@@ -21,9 +28,7 @@ export function initEditor({ editorConfig, container, handleMouseOver, handleMou
     },
   })
   const comps = editor.DomComponents
-  const iframe = document
-    .getElementsByTagName('willy-container')[0]
-    .children[1].shadowRoot.children[0].getElementsByClassName('gjs-frame')[0]
+  const iframe = getIframe()
 
   iframe.style.width = width + 1 + 'px'
 
@@ -48,25 +53,22 @@ export function initEditor({ editorConfig, container, handleMouseOver, handleMou
         ...comps.getType('text').view.prototype.events(),
         mouseover: 'onMouseOver',
         mouseout: 'onMouseOut',
-        click: (ev) => {
-          ev.stopPropagation()
-        },
-        dblclick: (ev) => {
-          ev.stopPropagation()
-        },
       },
       onMouseOver(ev) {
         ev?.stopPropagation()
         // Only if element not selected, apply hover class
         handleMouseOver(this.el)
       },
+      // onMouseUp(ev) {
+      //   ev?.stopPropagation()
+      //   handleMouseUp(this.el)
+      // },
       onMouseOut(ev) {
         ev?.stopPropagation()
         handleMouseOut(this.el)
       },
     },
   })
-
   editor.addComponents('<div data-gjs-type="willy-text">Test Component</div>')
   editor.addComponents('<div data-gjs-type="willy-text">Test Component 2</div>')
 
@@ -76,6 +78,9 @@ export function initEditor({ editorConfig, container, handleMouseOver, handleMou
     // Workaround because need to wait for editor to load in order to get the height of the wrapper
     setTimeout(() => {
       resizeIframe(iframe, editor)
+    })
+    iframe.contentWindow?.document.addEventListener('selectionchange', () => {
+      handleMouseUp()
     })
     editor.addStyle(
       'html, body{background-color: transparent; width: fit-content; height: fit-content; outline: 0!important;}',
