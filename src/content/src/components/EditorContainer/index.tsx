@@ -40,16 +40,11 @@ export default function EditorContainer() {
   return (
     <div
       style={{
-        position: 'absolute',
         zIndex: 99999999999,
-        top: '0px',
-        left: '0px',
         display: shouldDisplayElement ? 'block' : 'none',
       }}
     >
-      {shouldDisplayElement && (
-        <EditableElement editorConfig={editorConfig} targetElement={targetElement} />
-      )}
+      {shouldDisplayElement && <EditableElement editorConfig={editorConfig} />}
     </div>
   )
 }

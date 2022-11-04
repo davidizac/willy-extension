@@ -75,6 +75,14 @@ const config: webpack.Configuration = {
     extensions: ['.ts', '.tsx', '.js'],
     alias: {
       '@': srcDir,
+      FroalaEditor: 'file_name',
+    },
+    modules: ['../node_modules/froala-editor/js', 'node_modules'],
+
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      buffer: require.resolve('buffer/'),
+      stream: require.resolve('stream-browserify'),
     },
   },
   // @ts-ignore
