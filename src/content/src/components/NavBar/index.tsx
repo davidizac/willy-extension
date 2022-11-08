@@ -20,8 +20,7 @@ import { ChevronRightIcon, AddIcon } from '@chakra-ui/icons'
 import { useEffect } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { inspectingState } from '../../atoms/inspect.state'
-import { focusingState } from '../../atoms/focus.state'
-import { sideBarState } from '../../atoms/sidebar.state'
+import { editorState } from '../../atoms/editor.state'
 
 interface NavItem {
   label: string
@@ -62,33 +61,22 @@ const FLOW_TYPES: Array<NavItem> = [
 export default function NavBar() {
   const { isOpen, onClose, onOpen, onToggle } = useDisclosure()
   const [, setIsInspect] = useRecoilState(inspectingState)
-  const isFocusing = useRecoilValue(focusingState)
-  const isSideBarOpen = useRecoilValue(sideBarState)
-  const [, setSideBarOpen] = useRecoilState(sideBarState)
-
+  const isEditorOpen = useRecoilValue(editorState)
   useEffect(() => {
     onOpen()
   }, [])
 
   useEffect(() => {
-    if (isSideBarOpen) onClose()
+    if (isEditorOpen) onClose()
     else onOpen()
-  }, [isSideBarOpen])
-
-  useEffect(() => {
-    if (isFocusing) onClose()
-    else onOpen()
-  }, [isFocusing])
+  }, [isEditorOpen])
 
   const handleInspectClick = () => {
-    setSideBarOpen(false)
     onClose()
     setIsInspect(true)
   }
 
-  const handleSideBarClick = () => {
-    setSideBarOpen(!isSideBarOpen)
-  }
+  const handleSideBarClick = () => {}
 
   const AddButton = () => {
     const linkColor = useColorModeValue('lightCyan.600', 'lightCyan.200')
@@ -163,7 +151,7 @@ export default function NavBar() {
   return (
     <Slide direction='bottom' in={isOpen} style={{ zIndex: 100000000000 }}>
       <Box bg={'white'} width={'100%'} height={'auto'} px={'20px'} py={'10px'}>
-        {!isFocusing && (
+        {
           <Button
             variant={'outline'}
             position='absolute'
@@ -176,7 +164,7 @@ export default function NavBar() {
           >
             <Text fontSize='md'>{isOpen ? 'Hide' : 'Show'}</Text>
           </Button>
-        )}
+        }
         <Flex minWidth='max-content' alignItems='center' gap='3'>
           <Box p='2'>
             <Text size='lg' colorScheme={'mellowApricot'}>
@@ -192,7 +180,7 @@ export default function NavBar() {
           <Spacer />
           <ButtonGroup gap='2'>
             <Button variant='primary' onClick={handleSideBarClick}>
-              <Text fontSize='md'>{isSideBarOpen ? 'Close' : 'Open'}</Text>
+              Test
             </Button>
           </ButtonGroup>
         </Flex>

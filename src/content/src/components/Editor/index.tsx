@@ -20,6 +20,20 @@ export default function EditableElement({ editorConfig }) {
     })
   }, [iframeRef])
 
+  useEffect(() => {
+    const handler = (event) => {
+      if (event.data.target == 'willy') {
+        const message = event.data.payload
+        console.log(message)
+      }
+    }
+
+    window.addEventListener('message', handler)
+
+    // clean up
+    return () => window.removeEventListener('message', handler)
+  }, []) // empty array => run only once
+
   return (
     <div
       id='willy'

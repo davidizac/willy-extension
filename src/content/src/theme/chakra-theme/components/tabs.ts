@@ -10,6 +10,7 @@ const baseStyle = {
     _focusVisible: {
       boxShadow: 'base',
     },
+    fontSize: 'md',
   },
 }
 
@@ -74,14 +75,12 @@ const variants = {
 const sizes = {
   md: {
     tab: {
-      fontSize: 'sm',
       lineHeight: '1.25rem',
       py: '2',
     },
   },
   lg: {
     tab: {
-      fontSize: 'md',
       py: '2.5',
     },
   },
