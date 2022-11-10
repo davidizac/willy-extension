@@ -20,7 +20,7 @@ import { ChevronRightIcon, AddIcon } from '@chakra-ui/icons'
 import { useEffect } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { inspectingState } from '../../atoms/inspect.state'
-import { editorState } from '../../atoms/editor.state'
+import { editingState } from '../../atoms/editing.state'
 
 interface NavItem {
   label: string
@@ -61,22 +61,20 @@ const FLOW_TYPES: Array<NavItem> = [
 export default function NavBar() {
   const { isOpen, onClose, onOpen, onToggle } = useDisclosure()
   const [, setIsInspect] = useRecoilState(inspectingState)
-  const isEditorOpen = useRecoilValue(editorState)
+  const isEditing = useRecoilValue(editingState)
   useEffect(() => {
     onOpen()
   }, [])
 
   useEffect(() => {
-    if (isEditorOpen) onClose()
+    if (isEditing) onClose()
     else onOpen()
-  }, [isEditorOpen])
+  }, [isEditing])
 
   const handleInspectClick = () => {
     onClose()
     setIsInspect(true)
   }
-
-  const handleSideBarClick = () => {}
 
   const AddButton = () => {
     const linkColor = useColorModeValue('lightCyan.600', 'lightCyan.200')
@@ -179,9 +177,7 @@ export default function NavBar() {
           )}
           <Spacer />
           <ButtonGroup gap='2'>
-            <Button variant='primary' onClick={handleSideBarClick}>
-              Test
-            </Button>
+            <Button variant='primary'>Test</Button>
           </ButtonGroup>
         </Flex>
       </Box>

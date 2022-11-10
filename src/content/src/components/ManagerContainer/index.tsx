@@ -4,15 +4,15 @@ import SideBarModal from '../SideBar'
 import { useRef } from 'react'
 import HelperButton from '../HelperButton'
 import { useRecoilValue } from 'recoil'
-import { editorState } from '../../atoms/editor.state'
+import { editingState } from '../../atoms/editing.state'
 
 export default function ManagerContainer() {
   const ref = useRef(null)
-  const isEditorOpen = useRecoilValue(editorState)
+  const isEditing = useRecoilValue(editingState)
 
   return (
     <Box>
-      {isEditorOpen && <HelperButton />}
+      {isEditing && <HelperButton />}
       <NavBar />
       <SideBarModal containerRef={ref} />
       <Box className='sidebar-container' ref={ref}></Box>

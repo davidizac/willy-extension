@@ -158,7 +158,6 @@ export default class Overlay {
   container: HTMLElement
   tip: OverlayTip
   rects: Array<OverlayRect>
-  removeCallback: (this: Overlay) => void
 
   constructor() {
     // Find the root window, because overlays are positioned relative to it.
@@ -176,9 +175,6 @@ export default class Overlay {
 
     this.tip = new OverlayTip(doc, this.container)
     this.rects = []
-    this.removeCallback = () => {
-      console.log('remove callback called')
-    }
 
     doc.body.appendChild(this.container)
   }
@@ -192,8 +188,6 @@ export default class Overlay {
     if (this.container.parentNode) {
       this.container.parentNode.removeChild(this.container)
     }
-
-    this.removeCallback()
   }
 
   inspect(nodes: Array<HTMLElement>, name?: string, info?: string) {

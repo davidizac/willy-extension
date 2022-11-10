@@ -7,21 +7,24 @@ import { GlobalCSSForEditor, GlobalCSSForChakra } from './src/theme/global'
 import ManagerContainer from './src/components/ManagerContainer'
 import { RecoilRoot } from 'recoil'
 import RecoilNexus from 'recoil-nexus'
+import SyncEditor from './src/components/SyncEditor'
 
 export default function App() {
   return (
     <RecoilRoot>
       <RecoilNexus />
-      <ManagerRoot.div>
-        <ChakraProvider theme={theme}>
-          <GlobalCSSForChakra />
-          <ManagerContainer />
-        </ChakraProvider>
-      </ManagerRoot.div>
-      <EditorRoot.div>
-        <GlobalCSSForEditor />
-        <EditorContainer />
-      </EditorRoot.div>
+      <SyncEditor>
+        <ManagerRoot.div>
+          <ChakraProvider theme={theme}>
+            <GlobalCSSForChakra />
+            <ManagerContainer />
+          </ChakraProvider>
+        </ManagerRoot.div>
+        <EditorRoot.div>
+          <GlobalCSSForEditor />
+          <EditorContainer />
+        </EditorRoot.div>
+      </SyncEditor>
     </RecoilRoot>
   )
 }

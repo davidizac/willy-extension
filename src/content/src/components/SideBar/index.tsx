@@ -33,20 +33,29 @@ import {
   Flex,
   Spacer,
   Switch,
-  Center,
+  StackDivider,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { editorState } from '../../atoms/editor.state'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { ColorPicker, useColor } from 'react-color-palette'
+import ReactColorPaletteCss from '!raw-loader!react-color-palette/lib/css/styles.css'
+import { boxSettingState } from '../../atoms/box-settings.state'
+import { editingState } from '../../atoms/editing.state'
 
 function SideBarModal({ containerRef, ...rest }) {
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure()
-  const isEditorOpen = useRecoilValue(editorState)
+  const [boxSetting, setBoxSetting] = useRecoilState(boxSettingState)
+  const isEditing = useRecoilValue(editingState)
+
   const [drawerSide, setDrawerSide] = useState('right')
+  const [elementBehavior, setElementBehavior] = useState(boxSetting.element.triggerType)
+
+  const [backgroundColor, setBackgroundColor] = useColor('hex', boxSetting.backgroundColor)
+
   useEffect(() => {
-    if (isEditorOpen) onOpen()
+    if (isEditing) onOpen()
     else onClose()
-  }, [isEditorOpen])
+  }, [isEditing])
 
   const closeSideBar = () => {
     onClose()
@@ -56,9 +65,27 @@ function SideBarModal({ containerRef, ...rest }) {
     setDrawerSide(drawerSide === 'right' ? 'left' : 'right')
   }
 
+  const onPlacementChange = (e) => {
+    setBoxSetting((settings) => {
+      return {
+        ...settings,
+        placement: e.target.value,
+      }
+    })
+  }
+
+  const onMarginChange = (isLeft, e) => {
+    setBoxSetting((settings) => {
+      return {
+        ...settings,
+        [isLeft ? 'spacingX' : 'spacingY']: e,
+      }
+    })
+  }
+
   return (
     <>
-      {isEditorOpen && !isOpen && (
+      {isEditing && !isOpen && (
         <Button
           variant={'outline'}
           position='absolute'
@@ -114,10 +141,20 @@ function SideBarModal({ containerRef, ...rest }) {
               <TabPanels>
                 <TabPanel>
                   <Box marginBottom={'20px'}>
-                    <Text marginBottom={'20px'}>
-                      <strong>Width</strong>
-                    </Text>
-                    <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
+                    <Text marginBottom={'20px'}>Width</Text>
+                    <Slider
+                      min={20}
+                      max={800}
+                      step={5}
+                      aria-label='slider-ex-2'
+                      colorScheme='pink'
+                      value={boxSetting.width}
+                      onChange={(val) => {
+                        setBoxSetting((setting) => {
+                          return { ...setting, width: val }
+                        })
+                      }}
+                    >
                       <SliderTrack>
                         <SliderFilledTrack />
                       </SliderTrack>
@@ -135,18 +172,33 @@ function SideBarModal({ containerRef, ...rest }) {
                         </AccordionButton>
                       </h2>
                       <AccordionPanel pb={4}>
-                        <VStack spacing={6} align='stretch'>
+                        <VStack
+                          spacing={6}
+                          align='stretch'
+                          divider={<StackDivider borderColor='gray.200' />}
+                        >
                           <Flex>
                             <Box>
                               <Text>Type</Text>
                             </Box>
                             <Spacer />
                             <Box>
-                              <Select placeholder='Select option'>
-                                <option value='option1'>Click</option>
-                                <option value='option2'>Hover</option>
-                                <option value='option3'>Text Input</option>
-                                <option value='option3'>Hotspot</option>
+                              <Select
+                                value={boxSetting.actionType}
+                                onChange={(event) => {
+                                  setBoxSetting((setting) => {
+                                    return {
+                                      ...setting,
+                                      actionType: event.target.value,
+                                    }
+                                  })
+                                }}
+                                placeholder='Select option'
+                              >
+                                <option value='click'>Click</option>
+                                <option value='hover'>Hover</option>
+                                {/* <option value='option3'>Text Input</option>
+                                <option value='option3'>Hotspot</option> */}
                               </Select>
                             </Box>
                           </Flex>
@@ -163,11 +215,27 @@ function SideBarModal({ containerRef, ...rest }) {
                         </AccordionButton>
                       </h2>
                       <AccordionPanel pb={4}>
-                        <VStack spacing={6} align='stretch'>
+                        <VStack
+                          spacing={6}
+                          align='stretch'
+                          divider={<StackDivider borderColor='gray.200' />}
+                        >
                           <Box>
-                            <Checkbox>Continue flow if element does not exist</Checkbox>
+                            <Text mb={4}>Type</Text>
+                            <Box>
+                              <Select
+                                placeholder='Select option'
+                                value={elementBehavior}
+                                onChange={(e) => {
+                                  setElementBehavior(e.target.value)
+                                }}
+                              >
+                                <option value='visible'>Show only when element is visible</option>
+                                <option value='find'>Try to find element</option>
+                              </Select>
+                            </Box>
                           </Box>
-                          <Box>
+                          {/* <Box>
                             <RadioGroup defaultValue='auto'>
                               <Stack spacing={5} direction='row'>
                                 <Radio colorScheme='red' value='auto'>
@@ -178,10 +246,10 @@ function SideBarModal({ containerRef, ...rest }) {
                                 </Radio>
                               </Stack>
                             </RadioGroup>
-                          </Box>
-                          <Box>
+                          </Box> */}
+                          {/* <Box>
                             <Text color={'green'}>Selector is unique and valid</Text>
-                          </Box>
+                          </Box> */}
                         </VStack>
                       </AccordionPanel>
                     </AccordionItem>
@@ -195,21 +263,32 @@ function SideBarModal({ containerRef, ...rest }) {
                         </AccordionButton>
                       </h2>
                       <AccordionPanel pb={4}>
-                        <VStack spacing={6} align='stretch'>
+                        <VStack
+                          spacing={6}
+                          align='stretch'
+                          divider={<StackDivider borderColor='gray.200' />}
+                        >
                           <Box>
-                            <Select placeholder='Select option'>
-                              <option value='option1'>Left</option>
-                              <option value='option2'>Bottom</option>
-                              <option value='option3'>Top</option>
-                              <option value='option3'>Right</option>
+                            <Select
+                              value={boxSetting.placement}
+                              placeholder='Select option'
+                              onChange={onPlacementChange}
+                            >
+                              <option value='left'>Left</option>
+                              <option value='bottom'>Bottom</option>
+                              <option value='top'>Top</option>
+                              <option value='right'>Right</option>
                             </Select>
                           </Box>
                           <Box>
                             <Box>
-                              <Text>
-                                <strong>Left</strong>
-                              </Text>
-                              <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
+                              <Text>Left</Text>
+                              <Slider
+                                aria-label='slider-ex-2'
+                                colorScheme='pink'
+                                value={boxSetting.spacingX}
+                                onChange={(e) => onMarginChange(true, e)}
+                              >
                                 <SliderTrack>
                                   <SliderFilledTrack />
                                 </SliderTrack>
@@ -219,10 +298,13 @@ function SideBarModal({ containerRef, ...rest }) {
                           </Box>
                           <Box>
                             <Box>
-                              <Text>
-                                <strong>Top</strong>
-                              </Text>
-                              <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
+                              <Text>Top</Text>
+                              <Slider
+                                aria-label='slider-ex-2'
+                                colorScheme='pink'
+                                value={boxSetting.spacingY}
+                                onChange={(e) => onMarginChange(false, e)}
+                              >
                                 <SliderTrack>
                                   <SliderFilledTrack />
                                 </SliderTrack>
@@ -233,7 +315,7 @@ function SideBarModal({ containerRef, ...rest }) {
                         </VStack>
                       </AccordionPanel>
                     </AccordionItem>
-                    <AccordionItem>
+                    {/* <AccordionItem>
                       <h2>
                         <AccordionButton>
                           <Box flex='1' textAlign='left'>
@@ -243,12 +325,14 @@ function SideBarModal({ containerRef, ...rest }) {
                         </AccordionButton>
                       </h2>
                       <AccordionPanel pb={4}>
-                        <VStack spacing={6} align='stretch'>
+                        <VStack
+                          spacing={6}
+                          align='stretch'
+                          divider={<StackDivider borderColor='gray.200' />}
+                        >
                           <Box>
                             <Box>
-                              <Text>
-                                <strong>Width</strong>
-                              </Text>
+                              <Text>Width</Text>
                               <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
                                 <SliderTrack>
                                   <SliderFilledTrack />
@@ -259,9 +343,7 @@ function SideBarModal({ containerRef, ...rest }) {
                           </Box>
                           <Box>
                             <Box>
-                              <Text>
-                                <strong>Height</strong>
-                              </Text>
+                              <Text>Height</Text>
                               <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
                                 <SliderTrack>
                                   <SliderFilledTrack />
@@ -272,9 +354,7 @@ function SideBarModal({ containerRef, ...rest }) {
                           </Box>
                           <Box>
                             <Box>
-                              <Text>
-                                <strong>Corner Roundness</strong>
-                              </Text>
+                              <Text>Corner Roundness</Text>
                               <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
                                 <SliderTrack>
                                   <SliderFilledTrack />
@@ -285,7 +365,7 @@ function SideBarModal({ containerRef, ...rest }) {
                           </Box>
                         </VStack>
                       </AccordionPanel>
-                    </AccordionItem>
+                    </AccordionItem> */}
                   </Accordion>
                 </TabPanel>
                 <TabPanel>
@@ -300,19 +380,99 @@ function SideBarModal({ containerRef, ...rest }) {
                         </AccordionButton>
                       </h2>
                       <AccordionPanel pb={4}>
-                        <VStack spacing={6} align='stretch'>
+                        <VStack
+                          spacing={6}
+                          align='stretch'
+                          divider={<StackDivider borderColor='gray.200' />}
+                        >
                           <Box>
-                            <Text>
-                              <strong>Corner Roundness</strong>
-                            </Text>
-                            <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
+                            <Text mb='20px'>Background</Text>
+                            <Box>
+                              <style>{ReactColorPaletteCss}</style>
+                              <ColorPicker
+                                width={250}
+                                height={100}
+                                color={backgroundColor}
+                                onChange={(val) => {
+                                  setBackgroundColor(val)
+                                  setBoxSetting((setting) => {
+                                    return { ...setting, backgroundColor: val.hex }
+                                  })
+                                }}
+                                hideHSV
+                                hideRGB
+                              />
+                            </Box>
+                          </Box>
+                          <Box>
+                            <Text>Corner Roundness</Text>
+                            <Slider
+                              aria-label='slider-ex-2'
+                              colorScheme='pink'
+                              value={boxSetting.borderRadius}
+                              min={0}
+                              max={50}
+                              step={1}
+                              onChange={(val) => {
+                                setBoxSetting((setting) => {
+                                  return { ...setting, borderRadius: val }
+                                })
+                              }}
+                            >
                               <SliderTrack>
                                 <SliderFilledTrack />
                               </SliderTrack>
                               <SliderThumb />
                             </Slider>
                           </Box>
-                          <Flex>
+                          <VStack spacing={4} align='stretch'>
+                            <Text>Padding</Text>
+                            <Box>
+                              <Text fontSize='sm'>Vertical</Text>
+                              <Slider
+                                aria-label='slider-ex-2'
+                                colorScheme='pink'
+                                value={boxSetting.paddingY}
+                                min={3}
+                                max={100}
+                                step={1}
+                                onChange={(val) => {
+                                  setBoxSetting((setting) => {
+                                    return { ...setting, paddingY: val }
+                                  })
+                                }}
+                              >
+                                <SliderTrack>
+                                  <SliderFilledTrack />
+                                </SliderTrack>
+                                <SliderThumb />
+                              </Slider>
+                            </Box>
+                            <Box>
+                              <Text fontSize='sm'>Horizontal</Text>
+                              <Slider
+                                aria-label='slider-ex-2'
+                                colorScheme='pink'
+                                value={boxSetting.paddingX}
+                                min={3}
+                                max={150}
+                                step={1}
+                                onChange={(val) => {
+                                  setBoxSetting((setting) => {
+                                    return { ...setting, paddingX: val }
+                                  })
+                                }}
+                              >
+                                <SliderTrack>
+                                  <SliderFilledTrack />
+                                </SliderTrack>
+                                <SliderThumb />
+                              </Slider>
+                            </Box>
+                          </VStack>
+                          {
+                            // TODO: add other functionality
+                            /* <Flex>
                             <Box>
                               <Text>Box Border</Text>
                             </Box>
@@ -334,9 +494,7 @@ function SideBarModal({ containerRef, ...rest }) {
                             </Box>
                           </Flex>
                           <Box>
-                            <Text>
-                              <strong>Shadow Width</strong>
-                            </Text>
+                            <Text>Shadow Width</Text>
                             <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
                               <SliderTrack>
                                 <SliderFilledTrack />
@@ -345,20 +503,19 @@ function SideBarModal({ containerRef, ...rest }) {
                             </Slider>
                           </Box>
                           <Box>
-                            <Text>
-                              <strong>Shadow Intensity</strong>
-                            </Text>
+                            <Text>Shadow Intensity</Text>
                             <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
                               <SliderTrack>
                                 <SliderFilledTrack />
                               </SliderTrack>
                               <SliderThumb />
                             </Slider>
-                          </Box>
+                          </Box> */
+                          }
                         </VStack>
                       </AccordionPanel>
                     </AccordionItem>
-                    <AccordionItem>
+                    {/* <AccordionItem>
                       <h2>
                         <AccordionButton>
                           <Box flex='1' textAlign='left'>
@@ -368,25 +525,30 @@ function SideBarModal({ containerRef, ...rest }) {
                         </AccordionButton>
                       </h2>
                       <AccordionPanel pb={4}>
-                        <VStack spacing={6} align='stretch'>
-                          <Flex>
+                        <VStack
+                          spacing={6}
+                          align='stretch'
+                          divider={<StackDivider borderColor='gray.200' />}
+                        >
+                          <Box>
                             <Box>
-                              <Text>Color</Text>
+                              <Text mb='20px'>Color</Text>
                             </Box>
                             <Spacer />
                             <Box>
-                              <Select placeholder='Select option'>
-                                <option value='option1'>Click</option>
-                                <option value='option2'>Hover</option>
-                                <option value='option3'>Text Input</option>
-                                <option value='option3'>Hotspot</option>
-                              </Select>
+                              <style>{ReactColorPaletteCss}</style>
+                              <ColorPicker
+                                width={250}
+                                height={100}
+                                color={color}
+                                onChange={setColor}
+                                hideHSV
+                                hideRGB
+                              />
                             </Box>
-                          </Flex>
+                          </Box>
                           <Box>
-                            <Text>
-                              <strong>Opacity</strong>
-                            </Text>
+                            <Text>Opacity</Text>
                             <Slider aria-label='slider-ex-2' colorScheme='pink' defaultValue={30}>
                               <SliderTrack>
                                 <SliderFilledTrack />
@@ -396,7 +558,7 @@ function SideBarModal({ containerRef, ...rest }) {
                           </Box>
                         </VStack>
                       </AccordionPanel>
-                    </AccordionItem>
+                    </AccordionItem> */}
                   </Accordion>
                 </TabPanel>
               </TabPanels>

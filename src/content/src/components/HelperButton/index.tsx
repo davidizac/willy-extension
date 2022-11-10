@@ -14,16 +14,16 @@ import {
 } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { useRecoilState } from 'recoil'
-import { editorState } from '../../atoms/editor.state'
+import { editingState } from '../../atoms/editing.state'
 
 export default function HelperButton() {
   const ref = useRef(null)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [, setEditor] = useRecoilState(editorState)
+  const [, setEditing] = useRecoilState(editingState)
 
   const goBackWithoutSaving = () => {
-    setEditor(false)
+    setEditing(false)
     onClose()
   }
 
