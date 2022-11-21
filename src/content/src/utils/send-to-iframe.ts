@@ -4,6 +4,6 @@ export const sendToIframe = (payload, iframeRef) => {
       target: 'willy',
       payload,
     },
-    'http://localhost:3000',
+    'http://localhost:8080',
   )
 }

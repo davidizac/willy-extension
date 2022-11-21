@@ -48,7 +48,7 @@ function SideBarModal({ containerRef, ...rest }) {
   const isEditing = useRecoilValue(editingState)
 
   const [drawerSide, setDrawerSide] = useState('right')
-  const [elementBehavior, setElementBehavior] = useState(boxSetting.element.triggerType)
+  const [elementBehavior, setElementBehavior] = useState(boxSetting.behaviorType)
 
   const [backgroundColor, setBackgroundColor] = useColor('hex', boxSetting.backgroundColor)
 

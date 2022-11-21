@@ -6,4 +6,4 @@
   "eslint.validate": ["javascript"],
   "eslint.alwaysShowStatus": true, 
   "files.autoSave": "onFocusChange"
-}
+} 

@@ -14,12 +14,6 @@ export const boxSettingState = atom<any>({
     spacingX: 0,
     spacingY: 0,
     actionType: 'click',
-    element: {
-      triggerType: '',
-      continueFlowIfElementNotExist: {
-        value: false,
-        after: '',
-      },
-    },
+    behaviorType: '',
   },
 })
